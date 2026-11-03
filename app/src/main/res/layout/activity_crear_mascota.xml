@@ -1,0 +1,345 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/huellapp_background"
+    tools:context=".CrearMascotaActivity">
+
+    <!-- HEADER (ANCHO 0dp PARA RESPONSIVIDAD ESTRICTA) -->
+    <LinearLayout
+        android:id="@+id/headerCrear"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="16dp"
+        android:layout_marginTop="48dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/ivBack"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:padding="4dp"
+            android:src="@android:drawable/ic_menu_revert"
+            app:tint="@color/huellapp_text_dark" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_weight="1"
+            android:text="Ayuda a difundir con verificación de seguridad en Colombia"
+            android:textColor="@color/huellapp_text_hint"
+            android:textSize="13sp" />
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/headerCrear">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="24dp">
+
+            <!-- TARJETA DEL FORMULARIO -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="20dp"
+                android:background="@drawable/bg_card_rounded"
+                android:elevation="4dp"
+                android:orientation="vertical"
+                android:padding="24dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <!-- FOTO PRINCIPAL -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="FOTO PRINCIPAL"
+                    android:textColor="@color/huellapp_text_dark"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:id="@+id/btnCapturarFoto"
+                    android:layout_width="match_parent"
+                    android:layout_height="140dp"
+                    android:layout_marginTop="12dp"
+                    android:background="@drawable/bg_dashed_orange"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:clickable="true"
+                    android:focusable="true">
+
+                    <ImageView
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:src="@android:drawable/ic_menu_camera"
+                        app:tint="@color/huellapp_primary" />
+
+                    <TextView
+                        android:id="@+id/tvFotoHint"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="Toca para seleccionar foto de galería"
+                        android:textColor="@color/huellapp_text_dark"
+                        android:textSize="13sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tvFotoSubHint"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="Obligatorio (JPG, PNG)"
+                        android:textColor="@color/huellapp_text_hint"
+                        android:textSize="11sp" />
+                </LinearLayout>
+
+                <!-- Vista previa de la foto (oculta por defecto) -->
+                <ImageView
+                    android:id="@+id/ivFotoPreview"
+                    android:layout_width="match_parent"
+                    android:layout_height="180dp"
+                    android:layout_marginTop="12dp"
+                    android:background="@drawable/bg_card_rounded"
+                    android:clipToOutline="true"
+                    android:scaleType="centerCrop"
+                    android:visibility="gone" />
+
+                <!-- Botón para quitar/cambiar foto (oculto por defecto) -->
+                <TextView
+                    android:id="@+id/tvCambiarFoto"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:layout_marginTop="8dp"
+                    android:text="Cambiar Foto"
+                    android:textColor="@color/huellapp_primary"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+
+                <!-- NOMBRE -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:text="NOMBRE (OPCIONAL)"
+                    android:textColor="@color/huellapp_text_dark"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+                <EditText
+                    android:id="@+id/etNombre"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/bg_input_rounded"
+                    android:hint="Ej. Max, Firulais, Luna..."
+                    android:inputType="textPersonName"
+                    android:paddingHorizontal="16dp"
+                    android:textColorHint="@color/huellapp_text_hint" />
+
+                <!-- ESPECIE (TOGGLE BUTTONS) -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:text="ESPECIE"
+                    android:textColor="@color/huellapp_text_dark"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:orientation="horizontal"
+                    android:weightSum="3">
+
+                    <TextView
+                        android:id="@+id/btnEspeciePerro"
+                        android:layout_width="0dp"
+                        android:layout_height="45dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_toggle_unselected"
+                        android:gravity="center"
+                        android:text="Perro"
+                        android:textColor="@color/huellapp_text_dark"
+                        android:textStyle="bold" />
+
+                    <Space
+                        android:layout_width="8dp"
+                        android:layout_height="wrap_content" />
+
+                    <TextView
+                        android:id="@+id/btnEspecieGato"
+                        android:layout_width="0dp"
+                        android:layout_height="45dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_toggle_unselected"
+                        android:gravity="center"
+                        android:text="Gato"
+                        android:textColor="@color/huellapp_text_dark"
+                        android:textStyle="bold" />
+
+                    <Space
+                        android:layout_width="8dp"
+                        android:layout_height="wrap_content" />
+
+                    <TextView
+                        android:id="@+id/btnEspecieOtro"
+                        android:layout_width="0dp"
+                        android:layout_height="45dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_toggle_unselected"
+                        android:gravity="center"
+                        android:text="Otro"
+                        android:textColor="@color/huellapp_text_dark"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <!-- INPUT EXTRA PARA ESPECIE "OTRO" -->
+                <EditText
+                    android:id="@+id/etEspecieOtro"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/bg_input_rounded"
+                    android:hint="¿Qué animal es?"
+                    android:inputType="text"
+                    android:paddingHorizontal="16dp"
+                    android:textColorHint="@color/huellapp_text_hint"
+                    android:visibility="gone" />
+
+                <!-- RAZA -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:text="RAZA"
+                    android:textColor="@color/huellapp_text_dark"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+                <EditText
+                    android:id="@+id/etRaza"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/bg_input_rounded"
+                    android:hint="Ej. Labrador, Mestizo, Schnauzer..."
+                    android:inputType="text"
+                    android:paddingHorizontal="16dp"
+                    android:textColorHint="@color/huellapp_text_hint" />
+
+                <!-- COLOR Y SEÑAS -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:text="COLOR Y SEÑAS"
+                    android:textColor="@color/huellapp_text_dark"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+                <EditText
+                    android:id="@+id/etColor"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/bg_input_rounded"
+                    android:hint="Ej. Mancha blanca en pecho, collar rojo..."
+                    android:inputType="text"
+                    android:paddingHorizontal="16dp"
+                    android:textColorHint="@color/huellapp_text_hint" />
+
+                <!-- CIUDAD (AUTOCOMPLETE) -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:text="CIUDAD DE EXTRAVÍO"
+                    android:textColor="@color/huellapp_text_dark"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    app:boxBackgroundColor="@android:color/transparent"
+                    app:boxStrokeWidth="0dp"
+                    app:boxStrokeWidthFocused="0dp"
+                    app:hintEnabled="false">
+
+                    <AutoCompleteTextView
+                        android:id="@+id/autoCompleteCiudad"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:background="@drawable/bg_input_rounded"
+                        android:hint="Popayán, Colombia"
+                        android:inputType="text"
+                        android:paddingHorizontal="16dp"
+                        android:textColorHint="@color/huellapp_text_hint" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- FECHA DE PÉRDIDA -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:text="FECHA DE PÉRDIDA"
+                    android:textColor="@color/huellapp_text_dark"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+
+                <EditText
+                    android:id="@+id/etFecha"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/bg_input_rounded"
+                    android:drawableEnd="@android:drawable/ic_menu_today"
+                    android:drawablePadding="12dp"
+                    android:focusable="false"
+                    android:hint="Toca para seleccionar fecha"
+                    android:inputType="none"
+                    android:paddingHorizontal="16dp"
+                    android:textColorHint="@color/huellapp_text_hint" />
+
+                <!-- BOTÓN REGISTRAR -->
+                <Button
+                    android:id="@+id/btnRegistrarMascota"
+                    android:layout_width="match_parent"
+                    android:layout_height="55dp"
+                    android:layout_marginTop="32dp"
+                    android:background="@drawable/bg_button_orange"
+                    android:text="Guardar Reporte ✓"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>

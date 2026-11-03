@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Usamos un ripple para el efecto táctil moderno (Material Design) -->
+<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+    android:color="@color/huellapp_primary_dark">
+
+    <!-- Fondo base del botón -->
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="@color/huellapp_primary"/>
+            <corners android:radius="24dp"/>
+        </shape>
+    </item>
+</ripple>

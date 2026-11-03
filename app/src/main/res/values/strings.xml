@@ -1,0 +1,87 @@
+<resources>
+    <string name="app_name">HuellaApp</string>
+
+    <string-array name="ciudades_colombia">
+        <item>Acacías</item>
+        <item>Aguachica</item>
+        <item>Apartadó</item>
+        <item>Arauca</item>
+        <item>Armenia</item>
+        <item>Barrancabermeja</item>
+        <item>Barranquilla</item>
+        <item>Bello</item>
+        <item>Bogotá</item>
+        <item>Bucaramanga</item>
+        <item>Buenaventura</item>
+        <item>Buga</item>
+        <item>Cali</item>
+        <item>Cartagena</item>
+        <item>Cartago</item>
+        <item>Caucasia</item>
+        <item>Cereté</item>
+        <item>Chía</item>
+        <item>Ciénaga</item>
+        <item>Cúcuta</item>
+        <item>Dosquebradas</item>
+        <item>Duitama</item>
+        <item>Envigado</item>
+        <item>Facatativá</item>
+        <item>Florencia</item>
+        <item>Floridablanca</item>
+        <item>Fundación</item>
+        <item>Fusagasugá</item>
+        <item>Girardot</item>
+        <item>Girón</item>
+        <item>Ibagué</item>
+        <item>Inírida</item>
+        <item>Ipiales</item>
+        <item>Itagüí</item>
+        <item>Jamundí</item>
+        <item>La Dorada</item>
+        <item>Leticia</item>
+        <item>Lorica</item>
+        <item>Los Patios</item>
+        <item>Magangué</item>
+        <item>Maicao</item>
+        <item>Malambo</item>
+        <item>Manizales</item>
+        <item>Medellín</item>
+        <item>Mitú</item>
+        <item>Mocoa</item>
+        <item>Montería</item>
+        <item>Neiva</item>
+        <item>Ocaña</item>
+        <item>Palmira</item>
+        <item>Pamplona</item>
+        <item>Pasto</item>
+        <item>Pereira</item>
+        <item>Piedecuesta</item>
+        <item>Pitalito</item>
+        <item>Popayán</item>
+        <item>Puerto Boyacá</item>
+        <item>Puerto Carreño</item>
+        <item>Quibdó</item>
+        <item>Riohacha</item>
+        <item>Rionegro</item>
+        <item>Sabanalarga</item>
+        <item>Sahagún</item>
+        <item>San Andrés</item>
+        <item>San José del Guaviare</item>
+        <item>Santa Marta</item>
+        <item>Sincelejo</item>
+        <item>Soacha</item>
+        <item>Sogamoso</item>
+        <item>Soledad</item>
+        <item>Tierralta</item>
+        <item>Tuluá</item>
+        <item>Tumaco</item>
+        <item>Tunja</item>
+        <item>Turbo</item>
+        <item>Uribia</item>
+        <item>Valledupar</item>
+        <item>Villavicencio</item>
+        <item>Yopal</item>
+        <item>Yumbo</item>
+        <item>Zipaquirá</item>
+    </string-array>
+</resources>

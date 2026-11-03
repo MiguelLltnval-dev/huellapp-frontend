@@ -1,0 +1,22 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Tema Base de la App hereda de NoActionBar para diseño a pantalla completa -->
+    <style name="Base.Theme.HuellaApp" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <!-- Colores base inyectados al tema de la app -->
+        <item name="colorPrimary">@color/huellapp_primary</item>
+        <item name="colorPrimaryVariant">@color/huellapp_primary_dark</item>
+        <item name="colorOnPrimary">@color/white</item>
+
+        <!-- Color de fondo global de las pantallas -->
+        <item name="android:windowBackground">@color/huellapp_background</item>
+        <item name="colorSurface">@color/huellapp_card_bg</item>
+    </style>
+
+    <style name="Theme.HuellaApp" parent="Base.Theme.HuellaApp" />
+
+    <!-- Estilo para Títulos en HuellApp -->
+    <style name="HuellAppTitle" parent="TextAppearance.MaterialComponents.Headline5">
+        <item name="android:textColor">@color/huellapp_text_dark</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">24sp</item>
+    </style>
+</resources>

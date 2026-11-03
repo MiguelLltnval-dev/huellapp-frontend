@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/huellapp_background"
+    tools:context=".DirectorioVetActivity">
+
+    <!-- HEADER (ANCHO 0dp PARA RESPONSIVIDAD ESTRICTA) -->
+    <LinearLayout
+        android:id="@+id/headerDir"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:elevation="4dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="16dp"
+        android:layout_marginTop="48dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/ivBackDir"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:padding="4dp"
+            android:src="@android:drawable/ic_menu_revert"
+            app:tint="@color/huellapp_text_dark" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Directorio Vet"
+                    android:textColor="@color/huellapp_text_dark"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:background="@drawable/bg_alert_yellow"
+                    android:paddingHorizontal="6dp"
+                    android:paddingVertical="2dp"
+                    android:text="BETA COMERCIAL"
+                    android:textColor="#F57F17"
+                    android:textSize="10sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:text="Red Comercial HuellApp"
+                android:textColor="@color/huellapp_text_hint"
+                android:textSize="12sp" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- ÁREA DESLIZABLE (ALTO Y ANCHO 0dp PARA ADAPTARSE AL ESPACIO SOBRANTE) -->
+    <ScrollView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        app:layout_constraintBottom_toTopOf="@id/bottomBtnContainer"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/headerDir">
+
+        <!-- CONTENEDOR CON CONSTRAINTLAYOUT PARA EL CENTRADO Y ANCHOS EXACTOS -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="24dp">
+
+            <!-- ILUSTRACIÓN -->
+            <ImageView
+                android:id="@+id/ivMap"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:layout_marginTop="32dp"
+                android:background="@drawable/bg_button_orange"
+                android:padding="24dp"
+                android:src="@android:drawable/ic_dialog_map"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:tint="@color/white" />
+
+            <!-- TÍTULO -->
+            <TextView
+                android:id="@+id/tvTituloProximamente"
+                style="@style/HuellAppTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:text="¡Muy pronto!"
+                android:textSize="28sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/ivMap" />
+
+            <TextView
+                android:id="@+id/tvSubtituloInfo"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="24dp"
+                android:gravity="center"
+                android:text="Estamos preparando la red veterinaria más grande de Colombia para tus mascotas."
+                android:textColor="@color/huellapp_text_hint"
+                android:textSize="14sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvTituloProximamente" />
+
+            <!-- CONTENEDOR INFORMATIVO (ANCHO 0dp, MÁRGENES 24dp) -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="32dp"
+                android:layout_marginEnd="24dp"
+                android:background="@drawable/bg_card_rounded"
+                android:elevation="4dp"
+                android:orientation="vertical"
+                android:padding="24dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvSubtituloInfo">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="LO QUE ENCONTRARÁS AQUÍ:"
+                    android:textColor="@color/huellapp_text_dark"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+
+                <!-- Ítem 1 -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:gravity="center_vertical"
+                    android:text="Urgencias veterinarias 24/7"
+                    android:textColor="@color/huellapp_text_dark"
+                    android:textSize="15sp"
+                    app:drawableStartCompat="@android:drawable/ic_menu_add"
+                    android:drawablePadding="12dp" />
+
+                <!-- Ítem 2 -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:gravity="center_vertical"
+                    android:text="Peluquerías y guarderías"
+                    android:textColor="@color/huellapp_text_dark"
+                    android:textSize="15sp"
+                    app:drawableStartCompat="@android:drawable/ic_menu_crop"
+                    android:drawablePadding="12dp" />
+
+                <!-- Ítem 3 -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:gravity="center_vertical"
+                    android:text="Cupones y descuentos exclusivos"
+                    android:textColor="@color/huellapp_text_dark"
+                    android:textSize="15sp"
+                    app:drawableStartCompat="@android:drawable/ic_menu_agenda"
+                    android:drawablePadding="12dp" />
+
+                <!-- Insignia -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:background="@drawable/bg_badge_en_casa"
+                    android:gravity="center"
+                    android:padding="8dp"
+                    android:text="✓ Alianzas comerciales verificadas"
+                    android:textColor="@color/huellapp_green"
+                    android:textSize="13sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+
+    <!-- CONTENEDOR BOTÓN INFERIOR (ANCHO 0dp, RESPONSIVIDAD ESTRICTA) -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/bottomBtnContainer"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@color/huellapp_background"
+        android:padding="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <Button
+            android:id="@+id/btnNotificar"
+            android:layout_width="0dp"
+            android:layout_height="55dp"
+            android:background="@drawable/bg_button_orange"
+            android:text="Notificarme del lanzamiento"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

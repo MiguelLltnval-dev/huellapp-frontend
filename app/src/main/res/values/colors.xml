@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+    <!-- Paleta Oficial HuellApp -->
+    <color name="huellapp_background">#FDFBF7</color>
+    <color name="huellapp_primary">#FF7A00</color>
+    <color name="huellapp_primary_dark">#E65100</color>
+    <color name="huellapp_card_bg">#FFFFFF</color>
+    <color name="huellapp_text_dark">#2B2B2B</color>
+    <color name="huellapp_text_hint">#8A8A8A</color>
+    <color name="huellapp_border">#EAE5E1</color>
+    <color name="huellapp_blue">#0288D1</color>
+    <color name="huellapp_green">#4CAF50</color>
+    <color name="huellapp_red">#F44336</color>
+</resources>

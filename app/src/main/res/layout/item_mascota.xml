@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    android:background="@drawable/bg_card_rounded"
+    android:elevation="3dp"
+    android:padding="12dp">
+
+    <!-- Imagen de la mascota redondeada -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cvFoto"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        app:cardCornerRadius="12dp"
+        app:cardElevation="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/ivMascota"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:src="@android:drawable/ic_menu_gallery"
+            android:background="#EAE5E1" />
+
+        <!-- Indicador de Tiempo encima de la foto -->
+        <TextView
+            android:id="@+id/tvTiempo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:background="#99000000"
+            android:gravity="center"
+            android:text="Hace 2h"
+            android:textColor="@color/white"
+            android:textSize="10sp"
+            android:textStyle="bold" />
+    </androidx.cardview.widget.CardView>
+
+    <!-- Estado (Insignia Flotante) -->
+    <TextView
+        android:id="@+id/tvEstado"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:background="@drawable/bg_badge_perdido"
+        android:text="• PERDIDO"
+        android:textColor="@color/huellapp_red"
+        android:textSize="10sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@id/cvFoto"
+        app:layout_constraintTop_toTopOf="@id/cvFoto" />
+
+    <!-- Nombre -->
+    <TextView
+        android:id="@+id/tvNombreMascota"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="8dp"
+        android:text="Rocky"
+        android:textColor="@color/huellapp_text_dark"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@id/btnGo"
+        app:layout_constraintStart_toEndOf="@id/cvFoto"
+        app:layout_constraintTop_toBottomOf="@id/tvEstado" />
+
+    <!-- Especie / Raza -->
+    <TextView
+        android:id="@+id/tvEspecieMascota"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="8dp"
+        android:text="Perro • Golden Retriever"
+        android:textColor="@color/huellapp_text_hint"
+        android:textSize="13sp"
+        app:layout_constraintEnd_toStartOf="@id/btnGo"
+        app:layout_constraintStart_toEndOf="@id/cvFoto"
+        app:layout_constraintTop_toBottomOf="@id/tvNombreMascota" />
+
+    <!-- Ubicación -->
+    <TextView
+        android:id="@+id/tvUbicacionMascota"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="8dp"
+        android:text="Chapinero, Bogotá"
+        android:textColor="@color/huellapp_text_hint"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        app:drawableStartCompat="@android:drawable/ic_menu_mylocation"
+        app:drawableTint="@color/huellapp_primary"
+        android:drawablePadding="4dp"
+        app:layout_constraintEnd_toStartOf="@id/btnGo"
+        app:layout_constraintStart_toEndOf="@id/cvFoto"
+        app:layout_constraintTop_toBottomOf="@id/tvEspecieMascota" />
+
+    <!-- Botón Flecha -->
+    <ImageView
+        android:id="@+id/btnGo"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:background="@drawable/bg_avatar_verified"
+        android:padding="6dp"
+        android:src="@android:drawable/ic_media_play"
+        app:tint="@color/huellapp_primary"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

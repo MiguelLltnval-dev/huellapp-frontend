@@ -1,0 +1,505 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/huellapp_background"
+    tools:context=".DetalleMascotaActivity">
+
+    <!-- FOTO PRINCIPAL DE FONDO CON HEADER FLOTANTE -->
+    <ImageView
+        android:id="@+id/ivDetalleFoto"
+        android:layout_width="0dp"
+        android:layout_height="300dp"
+        android:scaleType="centerCrop"
+        android:src="@android:drawable/ic_menu_gallery"
+        android:background="#EAE5E1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- Botones flotantes sobre la foto -->
+    <ImageView
+        android:id="@+id/btnBackDetalle"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="48dp"
+        android:background="@drawable/bg_avatar_verified"
+        android:backgroundTint="#80FFFFFF"
+        android:padding="8dp"
+        android:src="@android:drawable/ic_menu_revert"
+        app:tint="@color/huellapp_text_dark"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/btnShareDetalle"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="48dp"
+        android:background="@drawable/bg_avatar_verified"
+        android:backgroundTint="#80FFFFFF"
+        android:padding="8dp"
+        android:src="@android:drawable/ic_menu_share"
+        app:tint="@color/huellapp_text_dark"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- ZONA CON SCROLL QUE SE SOLAPA SOBRE LA IMAGEN -->
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="260dp"
+        android:background="@drawable/bg_detail_header"
+        android:fillViewport="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="20dp">
+
+            <!-- TÍTULO Y ESTADO -->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/tvDetalleNombre"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Nombre"
+                    android:textColor="@color/huellapp_text_dark"
+                    android:textSize="28sp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginStart="8dp"
+                    android:src="@android:drawable/ic_menu_add"
+                    app:layout_constraintBottom_toBottomOf="@id/tvDetalleNombre"
+                    app:layout_constraintStart_toEndOf="@id/tvDetalleNombre"
+                    app:layout_constraintTop_toTopOf="@id/tvDetalleNombre"
+                    app:tint="@color/huellapp_primary" />
+
+                <TextView
+                    android:id="@+id/tvDetalleEstado"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_badge_perdido"
+                    android:text="• PERDIDO"
+                    android:textColor="@color/huellapp_red"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="@id/tvDetalleNombre"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/tvDetalleNombre" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <!-- VISTO POR ÚLTIMA VEZ -->
+            <TextView
+                android:id="@+id/tvDetalleUbicacion"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Visto por última vez: Cargando..."
+                android:textColor="@color/huellapp_text_hint"
+                android:textSize="13sp"
+                app:drawableStartCompat="@android:drawable/ic_menu_mylocation"
+                app:drawableTint="@color/huellapp_primary"
+                android:drawablePadding="4dp" />
+
+            <!-- GRID DE 4 TARJETAS -->
+            <GridLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:columnCount="2"
+                android:rowCount="2">
+
+                <!-- 1. Especie -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginBottom="16dp"
+                    android:background="@drawable/bg_detail_info_card"
+                    android:orientation="horizontal"
+                    android:padding="12dp"
+                    android:gravity="center_vertical">
+
+                    <ImageView
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:background="@drawable/bg_avatar_verified"
+                        android:backgroundTint="#FFE0B2"
+                        android:padding="6dp"
+                        android:src="@android:drawable/ic_menu_info_details"
+                        app:tint="@color/huellapp_primary" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_marginStart="8dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Especie"
+                            android:textSize="11sp"
+                            android:textColor="@color/huellapp_text_hint" />
+                        <TextView
+                            android:id="@+id/tvGridEspecie"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="..."
+                            android:textColor="@color/huellapp_text_dark"
+                            android:textStyle="bold"
+                            android:textSize="14sp" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- 2. Raza -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginBottom="16dp"
+                    android:background="@drawable/bg_detail_info_card"
+                    android:orientation="horizontal"
+                    android:padding="12dp"
+                    android:gravity="center_vertical">
+
+                    <ImageView
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:background="@drawable/bg_avatar_verified"
+                        android:backgroundTint="#F5F5F5"
+                        android:padding="6dp"
+                        android:src="@android:drawable/ic_menu_sort_by_size"
+                        app:tint="@color/huellapp_text_hint" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_marginStart="8dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Raza"
+                            android:textSize="11sp"
+                            android:textColor="@color/huellapp_text_hint" />
+                        <TextView
+                            android:id="@+id/tvGridRaza"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="..."
+                            android:textColor="@color/huellapp_text_dark"
+                            android:textStyle="bold"
+                            android:textSize="14sp" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- 3. Color -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    android:layout_marginEnd="8dp"
+                    android:background="@drawable/bg_detail_info_card"
+                    android:orientation="horizontal"
+                    android:padding="12dp"
+                    android:gravity="center_vertical">
+
+                    <ImageView
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:background="@drawable/bg_avatar_verified"
+                        android:backgroundTint="#FFE0B2"
+                        android:padding="6dp"
+                        android:src="@android:drawable/ic_menu_edit"
+                        app:tint="@color/huellapp_primary" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_marginStart="8dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Color"
+                            android:textSize="11sp"
+                            android:textColor="@color/huellapp_text_hint" />
+                        <TextView
+                            android:id="@+id/tvGridColor"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="..."
+                            android:textColor="@color/huellapp_text_dark"
+                            android:textStyle="bold"
+                            android:textSize="14sp" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- 4. Ciudad -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    android:layout_marginStart="8dp"
+                    android:background="@drawable/bg_detail_info_card"
+                    android:orientation="horizontal"
+                    android:padding="12dp"
+                    android:gravity="center_vertical">
+
+                    <ImageView
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:background="@drawable/bg_avatar_verified"
+                        android:backgroundTint="#FFE0B2"
+                        android:padding="6dp"
+                        android:src="@android:drawable/ic_dialog_map"
+                        app:tint="@color/huellapp_primary" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_marginStart="8dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Ciudad"
+                            android:textSize="11sp"
+                            android:textColor="@color/huellapp_text_hint" />
+                        <TextView
+                            android:id="@+id/tvGridCiudad"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="..."
+                            android:textColor="@color/huellapp_text_dark"
+                            android:textStyle="bold"
+                            android:textSize="14sp" />
+                    </LinearLayout>
+                </LinearLayout>
+            </GridLayout>
+
+            <!-- DETALLES ADICIONALES (RASGOS) -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:background="@drawable/bg_card_rounded"
+                android:elevation="2dp"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Rasgos particulares"
+                    android:textColor="@color/huellapp_primary"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    app:drawableStartCompat="@android:drawable/ic_dialog_info"
+                    app:drawableTint="@color/huellapp_primary"
+                    android:drawablePadding="8dp" />
+
+                <TextView
+                    android:id="@+id/tvRasgos"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="Información detallada extraída de la base de datos."
+                    android:textColor="@color/huellapp_text_dark"
+                    android:textSize="14sp" />
+            </LinearLayout>
+
+            <!-- BOTONES DE ACCIÓN PRINCIPALES -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:orientation="horizontal"
+                android:weightSum="2">
+
+                <Button
+                    android:id="@+id/btnLlamarDueno"
+                    android:layout_width="0dp"
+                    android:layout_height="55dp"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="8dp"
+                    android:background="@drawable/bg_button_orange"
+                    android:text="Llamar al dueño"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white"
+                    android:textStyle="bold"
+                    app:icon="@android:drawable/ic_menu_call"
+                    app:iconTint="@color/white" />
+
+                <Button
+                    android:id="@+id/btnCompartir"
+                    android:layout_width="0dp"
+                    android:layout_height="55dp"
+                    android:layout_weight="1"
+                    android:layout_marginStart="8dp"
+                    android:background="@drawable/bg_button_orange"
+                    android:text="Compartir"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white"
+                    android:textStyle="bold"
+                    app:icon="@android:drawable/ic_menu_share"
+                    app:iconTint="@color/white" />
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/btnMarcarEnCasa"
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/bg_button_outline_orange"
+                android:text="Marcar como EN CASA"
+                android:textAllCaps="false"
+                android:textColor="@color/huellapp_primary"
+                android:textStyle="bold"
+                app:icon="@android:drawable/ic_menu_agenda"
+                app:iconTint="@color/huellapp_primary" />
+
+            <!-- MAPA ESTÁTICO (PLACEHOLDER COMO EN DISEÑO) -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:text="Zona de búsqueda activa"
+                android:textColor="@color/huellapp_text_dark"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/bg_card_rounded"
+                android:clipToOutline="true"
+                android:scaleType="centerCrop"
+                android:src="@android:drawable/ic_dialog_map"
+                app:tint="@color/huellapp_text_hint" />
+
+            <!-- PISTAS (TIMELINE RECYCLERVIEW) -->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp">
+
+                <TextView
+                    android:id="@+id/tvPistasTitulo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Últimas pistas"
+                    android:textColor="@color/huellapp_text_dark"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:background="@drawable/bg_detail_info_card"
+                    android:paddingHorizontal="8dp"
+                    android:paddingVertical="4dp"
+                    android:text="0 registradas"
+                    android:textColor="@color/huellapp_text_dark"
+                    android:textSize="12sp"
+                    app:layout_constraintBottom_toBottomOf="@id/tvPistasTitulo"
+                    app:layout_constraintStart_toEndOf="@id/tvPistasTitulo"
+                    app:layout_constraintTop_toTopOf="@id/tvPistasTitulo" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Avistamientos"
+                    android:textColor="@color/huellapp_text_hint"
+                    android:textSize="12sp"
+                    app:drawableStartCompat="@android:drawable/ic_menu_send"
+                    app:drawableTint="@color/huellapp_text_hint"
+                    android:drawablePadding="4dp"
+                    app:layout_constraintBottom_toBottomOf="@id/tvPistasTitulo"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/tvPistasTitulo" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:gravity="center"
+                android:text="Aún no hay pistas registradas para esta mascota."
+                android:textColor="@color/huellapp_text_hint"
+                android:textSize="14sp" />
+
+            <Button
+                android:id="@+id/btnAgregarPista"
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:layout_marginTop="24dp"
+                android:background="@drawable/bg_button_outline_orange"
+                android:text="Agregar nueva pista"
+                android:textAllCaps="false"
+                android:textColor="@color/huellapp_primary"
+                android:textStyle="bold"
+                app:icon="@android:drawable/ic_menu_add"
+                app:iconTint="@color/huellapp_primary" />
+
+            <!-- CONSEJO FINAL -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:background="@drawable/bg_detail_info_card"
+                android:elevation="2dp"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="¿Lo viste? No corras hacia él"
+                    android:textColor="@color/huellapp_text_dark"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    app:drawableStartCompat="@android:drawable/ic_dialog_alert"
+                    app:drawableTint="@color/huellapp_primary"
+                    android:drawablePadding="8dp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="Agáchate para transmitir confianza, evita miradas fijas y llámalo suavemente mientras das aviso inmediato al dueño."
+                    android:textColor="@color/huellapp_text_hint"
+                    android:textSize="13sp" />
+            </LinearLayout>
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>

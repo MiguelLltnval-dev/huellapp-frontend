@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+
+    <!-- Fondo de la tarjeta -->
+    <solid android:color="@color/huellapp_card_bg" />
+
+    <!-- Bordes amplios -->
+    <corners android:radius="28dp" />
+
+    <!-- NOTA: La sombra real la daremos en el XML de la vista usando android:elevation="4dp" -->
+</shape>
