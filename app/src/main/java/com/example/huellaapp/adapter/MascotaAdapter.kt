@@ -5,11 +5,13 @@ import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.huellaapp.DetalleMascotaActivity
 import com.example.huellaapp.R
 import com.example.huellaapp.model.Mascota
+import com.example.huellaapp.utils.ImageUtils
 
 class MascotaAdapter(private var listaMascotas: List<Mascota>) :
     RecyclerView.Adapter<MascotaAdapter.MascotaViewHolder>() {
@@ -19,6 +21,7 @@ class MascotaAdapter(private var listaMascotas: List<Mascota>) :
         val tvEspecie: TextView = itemView.findViewById(R.id.tvEspecieMascota)
         val tvUbicacion: TextView = itemView.findViewById(R.id.tvUbicacionMascota)
         val tvEstado: TextView = itemView.findViewById(R.id.tvEstado)
+        val ivMascota: ImageView = itemView.findViewById(R.id.ivMascota)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MascotaViewHolder {
@@ -30,8 +33,13 @@ class MascotaAdapter(private var listaMascotas: List<Mascota>) :
     override fun onBindViewHolder(holder: MascotaViewHolder, position: Int) {
         val mascota = listaMascotas[position]
         holder.tvNombre.text = mascota.nombre
-        holder.tvEspecie.text = "${mascota.especie} • ${mascota.color}"
-        holder.tvUbicacion.text = mascota.ciudad
+        
+        // Limpiamos la especie para la tarjeta rápida
+        val colorBase = if (mascota.color.contains("Raza:")) mascota.color.split("Raza:")[0].trim().removeSuffix(".") else mascota.color
+        holder.tvEspecie.text = "${mascota.especie} • $colorBase"
+        
+        val ciudadBase = if (mascota.ciudad.contains(".")) mascota.ciudad.split(".")[0].trim() else mascota.ciudad
+        holder.tvUbicacion.text = ciudadBase
 
         // Lógica visual del Estado (Insignia)
         if (mascota.estado == "EN_CASA") {
@@ -44,10 +52,18 @@ class MascotaAdapter(private var listaMascotas: List<Mascota>) :
             holder.tvEstado.setBackgroundResource(R.drawable.bg_badge_perdido)
         }
 
+        // Cargar foto Base64 real usando ImageUtils
+        if (!mascota.fotoUrl.isNullOrEmpty()) {
+            ImageUtils.cargarBase64EnImageView(mascota.fotoUrl, holder.ivMascota)
+        } else {
+            holder.ivMascota.setImageResource(android.R.drawable.ic_menu_gallery)
+        }
+
         // Navegación al detalle
         holder.itemView.setOnClickListener {
             val context = holder.itemView.context
             val intent = Intent(context, DetalleMascotaActivity::class.java).apply {
+                putExtra("id", mascota.id)
                 putExtra("nombre", mascota.nombre)
                 putExtra("especie", mascota.especie)
                 putExtra("color", mascota.color)

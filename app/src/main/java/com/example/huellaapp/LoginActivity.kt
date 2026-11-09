@@ -9,6 +9,10 @@ import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
+import com.example.huellaapp.model.LoginRequest
+import com.example.huellaapp.network.RetrofitClient
+import kotlinx.coroutines.launch
 
 class LoginActivity : AppCompatActivity() {
 
@@ -31,7 +35,7 @@ class LoginActivity : AppCompatActivity() {
 
         // Botón Iniciar Sesión
         btnLogin.setOnClickListener {
-            validarLogin()
+            validarYLoguear()
         }
 
         // Navegar a Recuperar Contraseña
@@ -47,7 +51,7 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    private fun validarLogin() {
+    private fun validarYLoguear() {
         val email = etEmailLogin.text.toString().trim()
         val password = etPasswordLogin.text.toString().trim()
 
@@ -61,24 +65,53 @@ class LoginActivity : AppCompatActivity() {
             return
         }
 
-        // MOCK DE DATOS EN SHAREDPREFERENCES
-        // Para simular un inicio de sesión completo y llenar el perfil
-        val prefs = getSharedPreferences("HuellAppPrefs", MODE_PRIVATE)
-        if (!prefs.contains("nombre")) {
-            prefs.edit().apply {
-                putString("nombre", "Usuario Demo")
-                putString("email", email)
-                putString("celular", "+57 300 000 0000")
-                putString("ciudad", "Bogotá, Colombia")
-            }.apply()
-        }
+        // Bloquear botón durante la petición
+        btnLogin.isEnabled = false
+        btnLogin.text = "Iniciando sesión..."
 
-        Toast.makeText(this, "¡Bienvenido a HuellApp!", Toast.LENGTH_SHORT).show()
-        
-        // Ir a la pantalla principal
-        val intent = Intent(this, MainActivity::class.java)
-        // Limpiamos el historial para que no pueda volver atrás al login
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        startActivity(intent)
+        val request = LoginRequest(email, password)
+
+        lifecycleScope.launch {
+            try {
+                val response = RetrofitClient.apiService.iniciarSesion(request)
+                
+                if (response.isSuccessful) {
+                    val authResponse = response.body()
+                    val usuario = authResponse?.usuario
+                    
+                    // GUARDAR TOKEN Y DATOS DEL USUARIO EN SHAREDPREFERENCES
+                    val prefs = getSharedPreferences("HuellAppPrefs", MODE_PRIVATE)
+                    prefs.edit().apply {
+                        putString("token", authResponse?.token)
+                        putString("userId", usuario?._id)
+                        putString("nombre", usuario?.nombre)
+                        putString("email", usuario?.email)
+                        putString("celular", usuario?.celular)
+                        putString("departamento", usuario?.departamento)
+                        putString("ciudad", usuario?.ciudad)
+                    }.apply()
+
+                    Toast.makeText(this@LoginActivity, "¡Bienvenido a HuellApp!", Toast.LENGTH_SHORT).show()
+                    
+                    // Ir a la pantalla principal
+                    val intent = Intent(this@LoginActivity, MainActivity::class.java)
+                    // Limpiamos el historial para que no pueda volver atrás al login
+                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    startActivity(intent)
+                    
+                } else {
+                    Toast.makeText(this@LoginActivity, "Credenciales incorrectas", Toast.LENGTH_SHORT).show()
+                    restaurarBoton()
+                }
+            } catch (e: Exception) {
+                Toast.makeText(this@LoginActivity, "Error de red: revisa tu conexión", Toast.LENGTH_SHORT).show()
+                restaurarBoton()
+            }
+        }
+    }
+
+    private fun restaurarBoton() {
+        btnLogin.isEnabled = true
+        btnLogin.text = "Iniciar Sesión →"
     }
 }

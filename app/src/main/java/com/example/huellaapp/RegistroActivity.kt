@@ -8,9 +8,13 @@ import android.widget.AutoCompleteTextView
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
-import com.example.huellaapp.utils.LocationData
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
+import com.example.huellaapp.model.RegistroRequest
+import com.example.huellaapp.network.RetrofitClient
+import com.example.huellaapp.utils.LocationData
+import kotlinx.coroutines.launch
 
 class RegistroActivity : AppCompatActivity() {
 
@@ -54,7 +58,7 @@ class RegistroActivity : AppCompatActivity() {
 
         // Eventos
         btnRegistrarme.setOnClickListener {
-            validarRegistro()
+            validarYRegistrarUsuario()
         }
 
         tvGoToLogin.setOnClickListener {
@@ -62,13 +66,15 @@ class RegistroActivity : AppCompatActivity() {
         }
     }
 
-    private fun validarRegistro() {
+    private fun validarYRegistrarUsuario() {
         val nombre = etNombreRegistro.text.toString().trim()
         val email = etEmailRegistro.text.toString().trim()
         val celular = etCelularRegistro.text.toString().trim()
         val password = etPasswordRegistro.text.toString().trim()
+        val departamento = autoCompleteDepartamento.text.toString().trim()
+        val ciudad = autoCompleteCiudad.text.toString().trim()
 
-        if (nombre.isEmpty() || email.isEmpty() || celular.isEmpty() || password.isEmpty()) {
+        if (nombre.isEmpty() || email.isEmpty() || celular.isEmpty() || password.isEmpty() || departamento.isEmpty() || ciudad.isEmpty()) {
             Toast.makeText(this, "Todos los campos son obligatorios", Toast.LENGTH_SHORT).show()
             return
         }
@@ -83,18 +89,43 @@ class RegistroActivity : AppCompatActivity() {
             return
         }
 
-        // GUARDAR DATOS EN SHAREDPREFERENCES
-        val prefs = getSharedPreferences("HuellAppPrefs", MODE_PRIVATE)
-        prefs.edit().apply {
-            putString("nombre", nombre)
-            putString("email", email)
-            putString("celular", celular)
-            putString("departamento", autoCompleteDepartamento.text.toString().trim())
-            putString("ciudad", autoCompleteCiudad.text.toString().trim())
-        }.apply()
+        // Deshabilitar botón durante la carga
+        btnRegistrarme.isEnabled = false
+        btnRegistrarme.text = "Creando cuenta..."
 
-        // Simulación de éxito (posteriormente irá aquí Retrofit)
-        Toast.makeText(this, "Cuenta creada exitosamente. Por favor, inicia sesión.", Toast.LENGTH_LONG).show()
-        finish() // Regresar al Login
+        val request = RegistroRequest(nombre, email, password, celular, departamento, ciudad)
+
+        lifecycleScope.launch {
+            try {
+                val response = RetrofitClient.apiService.registrarUsuario(request)
+                
+                if (response.isSuccessful) {
+                    // GUARDAR DATOS EN SHAREDPREFERENCES TRAS ÉXITO EN BD
+                    val prefs = getSharedPreferences("HuellAppPrefs", MODE_PRIVATE)
+                    prefs.edit().apply {
+                        putString("nombre", nombre)
+                        putString("email", email)
+                        putString("celular", celular)
+                        putString("departamento", departamento)
+                        putString("ciudad", ciudad)
+                    }.apply()
+
+                    Toast.makeText(this@RegistroActivity, "Cuenta creada exitosamente. Por favor, inicia sesión.", Toast.LENGTH_LONG).show()
+                    finish() // Regresar al Login
+                } else {
+                    val errorMsg = response.errorBody()?.string() ?: response.message()
+                    Toast.makeText(this@RegistroActivity, "Error: $errorMsg", Toast.LENGTH_LONG).show()
+                    restaurarBoton()
+                }
+            } catch (e: Exception) {
+                Toast.makeText(this@RegistroActivity, "Error de conexión: revisa tu internet", Toast.LENGTH_SHORT).show()
+                restaurarBoton()
+            }
+        }
+    }
+
+    private fun restaurarBoton() {
+        btnRegistrarme.isEnabled = true
+        btnRegistrarme.text = "Registrarme ✓"
     }
 }

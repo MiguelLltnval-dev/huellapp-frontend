@@ -7,8 +7,17 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
+import com.example.huellaapp.model.EstadoRequest
+import com.example.huellaapp.network.RetrofitClient
+import com.example.huellaapp.utils.ImageUtils
+import kotlinx.coroutines.launch
 
 class DetalleMascotaActivity : AppCompatActivity() {
+
+    private lateinit var tvDetalleEstado: TextView
+    private lateinit var btnMarcarEnCasa: TextView
+    private var mascotaId: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -17,12 +26,13 @@ class DetalleMascotaActivity : AppCompatActivity() {
         // Botones de navegación
         val btnBackDetalle: ImageView = findViewById(R.id.btnBackDetalle)
         val btnShareDetalle: ImageView = findViewById(R.id.btnShareDetalle)
-        val btnMarcarEnCasa: TextView = findViewById(R.id.btnMarcarEnCasa) // Usamos TextView/Button
+        btnMarcarEnCasa = findViewById(R.id.btnMarcarEnCasa) // Usamos TextView/Button
         val btnLlamarDueno: TextView = findViewById(R.id.btnLlamarDueno)
 
         // Referencias a las vistas de la Mascota
+        val ivDetalleFoto: ImageView = findViewById(R.id.ivDetalleFoto)
         val tvDetalleNombre: TextView = findViewById(R.id.tvDetalleNombre)
-        val tvDetalleEstado: TextView = findViewById(R.id.tvDetalleEstado)
+        tvDetalleEstado = findViewById(R.id.tvDetalleEstado)
         val tvDetalleUbicacion: TextView = findViewById(R.id.tvDetalleUbicacion)
         
         val tvGridEspecie: TextView = findViewById(R.id.tvGridEspecie)
@@ -33,28 +43,25 @@ class DetalleMascotaActivity : AppCompatActivity() {
         val tvRasgos: TextView = findViewById(R.id.tvRasgos)
 
         // 1. RECUPERAR DATOS DEL INTENT
+        mascotaId = intent.getStringExtra("id")
         val nombre = intent.getStringExtra("nombre") ?: "Desconocido"
         val especieStr = intent.getStringExtra("especie") ?: ""
         val colorYDetalles = intent.getStringExtra("color") ?: ""
         val ubicacionStr = intent.getStringExtra("ciudad") ?: ""
         val estado = intent.getStringExtra("estado") ?: "PERDIDO"
-        // TODO: En Fase futura decodificar la fotoBase64 del intent si está presente
+        val fotoBase64 = intent.getStringExtra("fotoUrl")
 
         // 2. POBLAR LOS DATOS BÁSICOS
         tvDetalleNombre.text = nombre
         
-        if (estado == "EN_CASA") {
-            tvDetalleEstado.text = "✓ EN CASA"
-            tvDetalleEstado.setTextColor(Color.parseColor("#4CAF50"))
-            tvDetalleEstado.setBackgroundResource(R.drawable.bg_badge_en_casa)
-            btnMarcarEnCasa.visibility = View.GONE // Ocultarlo si ya está en casa
-        } else {
-            tvDetalleEstado.text = "• PERDIDO"
-            tvDetalleEstado.setTextColor(Color.parseColor("#F44336"))
-            tvDetalleEstado.setBackgroundResource(R.drawable.bg_badge_perdido)
+        // Cargar Foto Real
+        if (!fotoBase64.isNullOrEmpty()) {
+            ImageUtils.cargarBase64EnImageView(fotoBase64, ivDetalleFoto)
         }
+        
+        actualizarUIEstado(estado)
 
-        // 3. DESEMPAQUETAR LOS DATOS (Ya que backend los tiene unidos en el string)
+        // 3. DESEMPAQUETAR LOS DATOS
         tvGridEspecie.text = especieStr
 
         // Parsear "Color. Raza: X"
@@ -69,7 +76,7 @@ class DetalleMascotaActivity : AppCompatActivity() {
 
         // Parsear "Ciudad. Perdido el: X" o "Barrio, Ciudad - Contacto: X"
         tvDetalleUbicacion.text = "Visto por última vez: $ubicacionStr"
-        tvGridCiudad.text = ubicacionStr.split(",")[0].trim()
+        tvGridCiudad.text = ubicacionStr.split(",")[0].split(".")[0].trim()
         tvRasgos.text = colorYDetalles // Mostrar todo el bloque descriptivo como rasgos
 
         // 4. LISTENERS
@@ -84,9 +91,53 @@ class DetalleMascotaActivity : AppCompatActivity() {
         }
 
         btnMarcarEnCasa.setOnClickListener {
-            // TODO: Hacer PATCH al backend para actualizar el estado a "EN_CASA"
-            Toast.makeText(this, "Mascota marcada como En Casa", Toast.LENGTH_SHORT).show()
-            finish()
+            marcarMascotaComoEnCasa()
+        }
+    }
+
+    private fun actualizarUIEstado(estado: String) {
+        if (estado == "EN_CASA") {
+            tvDetalleEstado.text = "✓ EN CASA"
+            tvDetalleEstado.setTextColor(Color.parseColor("#4CAF50"))
+            tvDetalleEstado.setBackgroundResource(R.drawable.bg_badge_en_casa)
+            btnMarcarEnCasa.visibility = View.GONE
+        } else {
+            tvDetalleEstado.text = "• PERDIDO"
+            tvDetalleEstado.setTextColor(Color.parseColor("#F44336"))
+            tvDetalleEstado.setBackgroundResource(R.drawable.bg_badge_perdido)
+            btnMarcarEnCasa.visibility = View.VISIBLE
+        }
+    }
+
+    private fun marcarMascotaComoEnCasa() {
+        if (mascotaId.isNullOrEmpty()) {
+            Toast.makeText(this, "Error: ID de mascota no encontrado", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        btnMarcarEnCasa.isEnabled = false
+        btnMarcarEnCasa.text = "Actualizando..."
+
+        lifecycleScope.launch {
+            try {
+                val response = RetrofitClient.apiService.actualizarEstadoMascota(
+                    mascotaId!!,
+                    EstadoRequest("EN_CASA")
+                )
+
+                if (response.isSuccessful) {
+                    Toast.makeText(this@DetalleMascotaActivity, "¡Mascota marcada como EN CASA!", Toast.LENGTH_SHORT).show()
+                    actualizarUIEstado("EN_CASA")
+                } else {
+                    Toast.makeText(this@DetalleMascotaActivity, "Error al actualizar: ${response.code()}", Toast.LENGTH_SHORT).show()
+                    btnMarcarEnCasa.isEnabled = true
+                    btnMarcarEnCasa.text = "Marcar como EN CASA"
+                }
+            } catch (e: Exception) {
+                Toast.makeText(this@DetalleMascotaActivity, "Error de red", Toast.LENGTH_SHORT).show()
+                btnMarcarEnCasa.isEnabled = true
+                btnMarcarEnCasa.text = "Marcar como EN CASA"
+            }
         }
     }
 }
