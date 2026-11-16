@@ -375,13 +375,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="55dp"
                 android:layout_marginTop="16dp"
-                android:background="@drawable/bg_button_outline_orange"
+                android:background="@drawable/bg_button_orange"
                 android:text="Marcar como EN CASA"
                 android:textAllCaps="false"
-                android:textColor="@color/huellapp_primary"
+                android:textColor="@color/white"
                 android:textStyle="bold"
                 app:icon="@android:drawable/ic_menu_agenda"
-                app:iconTint="@color/huellapp_primary" />
+                app:iconTint="@color/white" />
 
             <!-- MAPA ESTÁTICO (PLACEHOLDER COMO EN DISEÑO) -->
             <TextView
@@ -394,14 +394,25 @@
                 android:textStyle="bold" />
 
             <ImageView
+                android:id="@+id/ivMapaEstatico"
                 android:layout_width="match_parent"
                 android:layout_height="150dp"
                 android:layout_marginTop="16dp"
-                android:background="@drawable/bg_card_rounded"
+                android:background="@drawable/bg_detail_info_card"
                 android:clipToOutline="true"
-                android:scaleType="centerCrop"
+                android:padding="32dp"
+                android:scaleType="fitCenter"
                 android:src="@android:drawable/ic_dialog_map"
-                app:tint="@color/huellapp_text_hint" />
+                app:tint="@color/huellapp_primary" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Toca el mapa para abrir la navegación GPS segura"
+                android:textAlignment="center"
+                android:textSize="12sp"
+                android:textColor="@color/huellapp_text_hint"
+                android:layout_marginTop="8dp"/>
 
             <!-- PISTAS (TIMELINE RECYCLERVIEW) -->
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -421,6 +432,7 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
+                    android:id="@+id/tvContadorPistas"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="12dp"
@@ -448,7 +460,16 @@
                     app:layout_constraintTop_toTopOf="@id/tvPistasTitulo" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvPistas"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:nestedScrollingEnabled="false"
+                android:visibility="gone" />
+
             <TextView
+                android:id="@+id/tvEmptyPistas"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
@@ -462,13 +483,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="55dp"
                 android:layout_marginTop="24dp"
-                android:background="@drawable/bg_button_outline_orange"
-                android:text="Agregar nueva pista"
+                android:layout_marginBottom="32dp"
+                android:background="@drawable/bg_button_orange"
+                android:text="Agregar nueva pista con IA"
                 android:textAllCaps="false"
-                android:textColor="@color/huellapp_primary"
+                android:textColor="@color/white"
                 android:textStyle="bold"
                 app:icon="@android:drawable/ic_menu_add"
-                app:iconTint="@color/huellapp_primary" />
+                app:iconTint="@color/white" />
 
             <!-- CONSEJO FINAL -->
             <LinearLayout

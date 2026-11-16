@@ -31,8 +31,10 @@ object RetrofitClient {
     private val client = OkHttpClient.Builder()
         .addInterceptor(logging)
         .addInterceptor(authInterceptor)
-        .connectTimeout(15, TimeUnit.SECONDS)
-        .readTimeout(15, TimeUnit.SECONDS)
+        // Aumentados a 60s para prevenir "timeout lento" con las IA generativas
+        .connectTimeout(60, TimeUnit.SECONDS)
+        .readTimeout(60, TimeUnit.SECONDS)
+        .writeTimeout(60, TimeUnit.SECONDS)
         .build()
 
     val apiService: ApiService by lazy {

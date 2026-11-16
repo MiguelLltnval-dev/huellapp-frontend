@@ -9,6 +9,8 @@ import com.example.huellaapp.model.PerfilRequest
 import com.example.huellaapp.model.RecuperarRequest
 import com.example.huellaapp.model.ChatRequest
 import com.example.huellaapp.model.ChatResponse
+import com.example.huellaapp.model.Pista
+import com.example.huellaapp.model.PistaRequest
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -31,6 +33,15 @@ interface ApiService {
         @Path("id") id: String,
         @Body request: EstadoRequest
     ): Response<Mascota>
+
+    @GET("mascotas/{id}/pistas")
+    suspend fun obtenerPistas(@Path("id") id: String): Response<List<Pista>>
+
+    @POST("mascotas/{id}/pistas")
+    suspend fun registrarPista(
+        @Path("id") id: String,
+        @Body request: PistaRequest
+    ): Response<Pista>
 
 
     // --- ENDPOINTS USUARIOS (AUTH) ---

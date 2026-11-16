@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:layout_marginBottom="12dp"
+    android:background="@drawable/bg_detail_info_card"
+    android:padding="16dp">
+
+    <TextView
+        android:id="@+id/tvPistaDesc"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Descripción de la pista..."
+        android:textColor="@color/huellapp_text_dark"
+        android:textSize="14sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/tvPistaUbi"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:text="📍 Ubicación"
+        android:textColor="@color/huellapp_text_hint"
+        android:textSize="13sp" />
+
+    <TextView
+        android:id="@+id/tvPistaUser"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:text="Aportado por: Usuario"
+        android:textColor="@color/huellapp_primary"
+        android:textSize="12sp"
+        android:textStyle="bold" />
+</LinearLayout>

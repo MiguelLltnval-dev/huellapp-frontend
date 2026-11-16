@@ -11,6 +11,9 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.example.huellaapp.adapter.PistaAdapter
 import com.example.huellaapp.model.EstadoRequest
 import com.example.huellaapp.network.RetrofitClient
 import com.example.huellaapp.utils.ImageUtils
@@ -22,6 +25,11 @@ class DetalleMascotaActivity : AppCompatActivity() {
     private lateinit var btnMarcarEnCasa: TextView
     private var mascotaId: String? = null
     private var esMiMascota: Boolean = false
+
+    private lateinit var rvPistas: RecyclerView
+    private lateinit var tvEmptyPistas: TextView
+    private lateinit var tvContadorPistas: TextView
+    private lateinit var pistaAdapter: PistaAdapter
     
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,6 +53,14 @@ class DetalleMascotaActivity : AppCompatActivity() {
         val tvGridCiudad: TextView = findViewById(R.id.tvGridCiudad)
 
         val tvRasgos: TextView = findViewById(R.id.tvRasgos)
+        
+        rvPistas = findViewById(R.id.rvPistas)
+        tvEmptyPistas = findViewById(R.id.tvEmptyPistas)
+        tvContadorPistas = findViewById(R.id.tvContadorPistas)
+        
+        rvPistas.layoutManager = LinearLayoutManager(this)
+        pistaAdapter = PistaAdapter(emptyList())
+        rvPistas.adapter = pistaAdapter
 
         // 1. RECUPERAR DATOS DEL INTENT
         mascotaId = intent.getStringExtra("id")
@@ -114,16 +130,60 @@ class DetalleMascotaActivity : AppCompatActivity() {
             }
         }
 
+        val ivMapaEstatico = findViewById<ImageView>(R.id.ivMapaEstatico)
+        ivMapaEstatico.setOnClickListener {
+            val mapIntentUri = Uri.parse("geo:0,0?q=$ubicacionStr")
+            val mapIntent = Intent(Intent.ACTION_VIEW, mapIntentUri)
+            mapIntent.setPackage("com.google.android.apps.maps")
+            if (mapIntent.resolveActivity(packageManager) != null) {
+                startActivity(mapIntent)
+            } else {
+                // Fallback si no tiene Google Maps instalado
+                startActivity(Intent(Intent.ACTION_VIEW, mapIntentUri))
+            }
+        }
+
         val btnAgregarPista = findViewById<Button>(R.id.btnAgregarPista)
         btnAgregarPista.setOnClickListener {
-            val intent = Intent(this, AsistenteIAActivity::class.java)
-            intent.putExtra("CONTEXTO_MASCOTA", nombre)
-            startActivity(intent)
+            val intentPista = Intent(this, AsistenteIAActivity::class.java)
+            intentPista.putExtra("CONTEXTO_MASCOTA", nombre)
+            intentPista.putExtra("ID_MASCOTA", mascotaId)
+            startActivity(intentPista)
             Toast.makeText(this, "Dile a la IA dónde lo viste", Toast.LENGTH_SHORT).show()
         }
 
         btnMarcarEnCasa.setOnClickListener {
             marcarMascotaComoEnCasa()
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        cargarPistas()
+    }
+    
+    private fun cargarPistas() {
+        if (mascotaId.isNullOrEmpty()) return
+        lifecycleScope.launch {
+            try {
+                val response = RetrofitClient.apiService.obtenerPistas(mascotaId!!)
+                if (response.isSuccessful) {
+                    val lista = response.body() ?: emptyList()
+                    pistaAdapter.actualizarPistas(lista)
+                    
+                    tvContadorPistas.text = "${lista.size} registradas"
+                    
+                    if (lista.isEmpty()) {
+                        tvEmptyPistas.visibility = View.VISIBLE
+                        rvPistas.visibility = View.GONE
+                    } else {
+                        tvEmptyPistas.visibility = View.GONE
+                        rvPistas.visibility = View.VISIBLE
+                    }
+                }
+            } catch (e: Exception) {
+                // Silencioso para no saturar al usuario
+            }
         }
     }
 

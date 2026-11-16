@@ -40,6 +40,11 @@ class EditarPerfilActivity : AppCompatActivity() {
         if (uri != null) {
             try {
                 ivEditAvatar.setImageURI(uri)
+                // ¡AQUÍ ESTÁ LA SOLUCIÓN! Quitamos el filtro azul y el padding para que se vea la foto real
+                ivEditAvatar.imageTintList = null
+                ivEditAvatar.setPadding(0, 0, 0, 0)
+                ivEditAvatar.scaleType = ImageView.ScaleType.CENTER_CROP
+
                 val inputStream = contentResolver.openInputStream(uri)
                 val bitmap = BitmapFactory.decodeStream(inputStream)
                 val outputStream = ByteArrayOutputStream()
@@ -104,6 +109,9 @@ class EditarPerfilActivity : AppCompatActivity() {
         if (!fotoGuardada.isNullOrEmpty()) {
             fotoBase64 = fotoGuardada
             ImageUtils.cargarBase64EnImageView(fotoGuardada, ivEditAvatar)
+            ivEditAvatar.imageTintList = null
+            ivEditAvatar.setPadding(0, 0, 0, 0)
+            ivEditAvatar.scaleType = ImageView.ScaleType.CENTER_CROP
         }
         
         // Cargar las ciudades del departamento guardado para que la lista funcione

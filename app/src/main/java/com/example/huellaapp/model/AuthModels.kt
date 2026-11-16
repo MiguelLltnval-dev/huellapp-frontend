@@ -57,7 +57,9 @@ data class ChatRequest(
 data class ChatResponse(
     val respuesta: String,
     val esBorrador: Boolean = false,
-    val mascotaGenerada: MascotaBorrador? = null
+    val mascotaGenerada: MascotaBorrador? = null,
+    val esPista: Boolean = false,
+    val pistaGenerada: PistaBorrador? = null
 )
 
 data class MascotaBorrador(
@@ -65,4 +67,22 @@ data class MascotaBorrador(
     val raza: String?,
     val color: String?,
     val ciudad: String?
+)
+
+data class PistaBorrador(
+    val descripcion: String?,
+    val ubicacion: String?
+)
+
+data class PistaRequest(
+    val descripcion: String,
+    val ubicacion: String
+)
+
+data class Pista(
+    @SerializedName("_id") val id: String? = null,
+    val descripcion: String,
+    val ubicacion: String,
+    val fecha: String? = null,
+    val usuarioId: UsuarioData? = null
 )

@@ -122,6 +122,8 @@ class MainActivity : AppCompatActivity() {
         val fotoGuardada = prefs.getString("fotoPerfil", "")
         if (!fotoGuardada.isNullOrEmpty()) {
             ImageUtils.cargarBase64EnImageView(fotoGuardada, ivProfileUser)
+            ivProfileUser.imageTintList = null
+            ivProfileUser.scaleType = ImageView.ScaleType.CENTER_CROP
         }
     }
 

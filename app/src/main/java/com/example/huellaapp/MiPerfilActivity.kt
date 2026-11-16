@@ -109,6 +109,9 @@ class MiPerfilActivity : AppCompatActivity() {
         
         if (!fotoGuardada.isNullOrEmpty()) {
             ImageUtils.cargarBase64EnImageView(fotoGuardada, ivAvatar)
+            ivAvatar.imageTintList = null
+            ivAvatar.setPadding(0, 0, 0, 0)
+            ivAvatar.scaleType = ImageView.ScaleType.CENTER_CROP
         }
         
         // Unimos Ciudad y Departamento para mostrar en el perfil
