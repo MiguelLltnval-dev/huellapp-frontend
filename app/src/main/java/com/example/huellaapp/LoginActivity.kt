@@ -90,6 +90,8 @@ class LoginActivity : AppCompatActivity() {
                         putString("departamento", usuario?.departamento)
                         putString("ciudad", usuario?.ciudad)
                     }.apply()
+                    
+                    RetrofitClient.authToken = authResponse?.token
 
                     Toast.makeText(this@LoginActivity, "¡Bienvenido a HuellApp!", Toast.LENGTH_SHORT).show()
                     

@@ -69,6 +69,36 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
+                <!-- Avatar Selection -->
+                <LinearLayout
+                    android:id="@+id/btnSeleccionarAvatar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="16dp"
+                    android:layout_marginBottom="16dp"
+                    android:background="@drawable/bg_detail_info_card">
+
+                    <ImageView
+                        android:id="@+id/ivEditAvatar"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:background="@drawable/bg_avatar_verified"
+                        android:padding="16dp"
+                        android:src="@android:drawable/ic_menu_camera"
+                        app:tint="@color/huellapp_blue" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Toca para seleccionar tu foto (Obligatorio)"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/huellapp_primary"
+                        android:layout_marginTop="8dp"/>
+                </LinearLayout>
+
                 <!-- Nombre -->
                 <TextView
                     android:layout_width="wrap_content"

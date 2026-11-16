@@ -227,6 +227,9 @@ class CrearMascotaActivity : AppCompatActivity() {
         val colorYDetalles = "$color. Raza: $raza"
         val ciudadYFecha = "$ciudad. Perdido el: $fecha"
 
+        val prefs = getSharedPreferences("HuellAppPrefs", MODE_PRIVATE)
+        val myUserId = prefs.getString("userId", null)
+
         val nuevaMascota = Mascota(
             id = null,
             nombre = nombreFinal,
@@ -234,7 +237,8 @@ class CrearMascotaActivity : AppCompatActivity() {
             color = colorYDetalles,
             ciudad = ciudadYFecha,
             estado = "PERDIDO",
-            fotoUrl = fotoBase64 // Enviamos la imagen codificada a Node.js
+            fotoUrl = fotoBase64, // Enviamos la imagen codificada a Node.js
+            usuarioId = myUserId
         )
 
         lifecycleScope.launch {

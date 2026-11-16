@@ -1,8 +1,11 @@
 package com.example.huellaapp
 
+import android.content.Intent
+import android.net.Uri
 import android.graphics.Color
 import android.os.Bundle
 import android.view.View
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
@@ -18,7 +21,8 @@ class DetalleMascotaActivity : AppCompatActivity() {
     private lateinit var tvDetalleEstado: TextView
     private lateinit var btnMarcarEnCasa: TextView
     private var mascotaId: String? = null
-
+    private var esMiMascota: Boolean = false
+    
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detalle_mascota)
@@ -50,6 +54,13 @@ class DetalleMascotaActivity : AppCompatActivity() {
         val ubicacionStr = intent.getStringExtra("ciudad") ?: ""
         val estado = intent.getStringExtra("estado") ?: "PERDIDO"
         val fotoBase64 = intent.getStringExtra("fotoUrl")
+        val duenoId = intent.getStringExtra("usuarioId")
+        val celularDueno = intent.getStringExtra("celularDueno")
+
+        // 1.5 VERIFICAR SI SOY EL DUEÑO DE LA MASCOTA
+        val prefs = getSharedPreferences("HuellAppPrefs", MODE_PRIVATE)
+        val miUserId = prefs.getString("userId", "")
+        esMiMascota = (!duenoId.isNullOrEmpty() && duenoId == miUserId)
 
         // 2. POBLAR LOS DATOS BÁSICOS
         tvDetalleNombre.text = nombre
@@ -83,11 +94,32 @@ class DetalleMascotaActivity : AppCompatActivity() {
         btnBackDetalle.setOnClickListener { finish() }
 
         btnShareDetalle.setOnClickListener {
-            Toast.makeText(this, "Generando cartel de búsqueda...", Toast.LENGTH_SHORT).show()
+            val shareIntent = Intent().apply {
+                action = Intent.ACTION_SEND
+                putExtra(Intent.EXTRA_TEXT, "¡Ayúdame a encontrar a $nombre! Es un $especieStr perdido en $ubicacionStr. Descarga HuellApp para ver más detalles.")
+                type = "text/plain"
+            }
+            startActivity(Intent.createChooser(shareIntent, "Compartir mascota vía..."))
         }
 
         btnLlamarDueno.setOnClickListener {
-            Toast.makeText(this, "Abriendo marcador de llamadas...", Toast.LENGTH_SHORT).show()
+            if (!celularDueno.isNullOrEmpty()) {
+                val intentLlamada = Intent(Intent.ACTION_DIAL).apply {
+                    data = Uri.parse("tel:$celularDueno") 
+                }
+                startActivity(intentLlamada)
+                Toast.makeText(this, "Abriendo el marcador...", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(this, "El dueño no ha proporcionado un teléfono de contacto.", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        val btnAgregarPista = findViewById<Button>(R.id.btnAgregarPista)
+        btnAgregarPista.setOnClickListener {
+            val intent = Intent(this, AsistenteIAActivity::class.java)
+            intent.putExtra("CONTEXTO_MASCOTA", nombre)
+            startActivity(intent)
+            Toast.makeText(this, "Dile a la IA dónde lo viste", Toast.LENGTH_SHORT).show()
         }
 
         btnMarcarEnCasa.setOnClickListener {
@@ -105,7 +137,8 @@ class DetalleMascotaActivity : AppCompatActivity() {
             tvDetalleEstado.text = "• PERDIDO"
             tvDetalleEstado.setTextColor(Color.parseColor("#F44336"))
             tvDetalleEstado.setBackgroundResource(R.drawable.bg_badge_perdido)
-            btnMarcarEnCasa.visibility = View.VISIBLE
+            // Solo mostrar el botón de "Marcar en Casa" si soy el dueño
+            btnMarcarEnCasa.visibility = if (esMiMascota) View.VISIBLE else View.GONE
         }
     }
 

@@ -13,7 +13,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.huellaapp.adapter.ChatAdapter
 import com.example.huellaapp.model.ChatMessage
-import kotlinx.coroutines.delay
+import com.example.huellaapp.model.ChatRequest
+import com.example.huellaapp.network.RetrofitClient
 import kotlinx.coroutines.launch
 
 class AsistenteIAActivity : AppCompatActivity() {
@@ -39,46 +40,71 @@ class AsistenteIAActivity : AppCompatActivity() {
         cardDraftContainer = findViewById(R.id.cardDraftContainer)
         btnPublicarPista = findViewById(R.id.btnPublicarPista)
 
-        // Configurar RecyclerView
         chatAdapter = ChatAdapter(mensajes)
         rvChat.layoutManager = LinearLayoutManager(this).apply {
             stackFromEnd = true
         }
         rvChat.adapter = chatAdapter
 
-        // Mensaje inicial de la IA
-        chatAdapter.agregarMensaje(ChatMessage("¡Hola! Soy tu asistente de HuellApp. ¿Viste alguna mascota perdida o necesitas ayuda?", false))
+        val contextoMascota = intent.getStringExtra("CONTEXTO_MASCOTA")
+        if (!contextoMascota.isNullOrEmpty()) {
+            chatAdapter.agregarMensaje(ChatMessage("¡Hola! Veo que quieres reportar una pista sobre $contextoMascota. Dime, ¿dónde lo viste o qué detalles recuerdas?", false))
+        } else {
+            chatAdapter.agregarMensaje(ChatMessage("¡Hola! Soy tu asistente IA de HuellApp. ¿Viste alguna mascota perdida o necesitas ayuda?", false))
+        }
 
         ivBackChat.setOnClickListener { finish() }
 
         btnSendChat.setOnClickListener {
             val texto = etChatInput.text.toString().trim()
             if (texto.isNotEmpty()) {
-                // Agregar mensaje de usuario
                 chatAdapter.agregarMensaje(ChatMessage(texto, true))
                 etChatInput.text.clear()
                 rvChat.scrollToPosition(mensajes.size - 1)
 
-                // Simular respuesta de la IA
-                simularRespuestaIA()
+                consultarAI(texto)
             }
         }
 
         btnPublicarPista.setOnClickListener {
-            Toast.makeText(this, "Avistamiento publicado oficialmente.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "La IA publicará esta información pronto en la mascota.", Toast.LENGTH_SHORT).show()
             finish()
         }
     }
 
-    private fun simularRespuestaIA() {
+    private fun consultarAI(mensajeUsuario: String) {
+        // Mostramos un mensaje de "escribiendo"
+        val loadingIndex = mensajes.size
+        chatAdapter.agregarMensaje(ChatMessage("Escribiendo...", false))
+        rvChat.scrollToPosition(loadingIndex)
+
         lifecycleScope.launch {
-            delay(1000) // Simula que la IA está "escribiendo"
-            chatAdapter.agregarMensaje(ChatMessage("Entendido. He analizado tu reporte y extraído los datos clave. Confirma si el borrador es correcto para publicarlo:", false))
-            rvChat.scrollToPosition(mensajes.size - 1)
-            
-            delay(500)
-            // Mostrar la tarjeta borrador generada por IA
-            cardDraftContainer.visibility = View.VISIBLE
+            try {
+                val response = RetrofitClient.apiService.chatearConIA(ChatRequest(mensajeUsuario))
+                
+                // Removemos el mensaje de cargando
+                mensajes.removeAt(loadingIndex)
+                chatAdapter.notifyItemRemoved(loadingIndex)
+
+                if (response.isSuccessful && response.body() != null) {
+                    val respuestaIA = response.body()!!
+                    
+                    chatAdapter.agregarMensaje(ChatMessage(respuestaIA.respuesta, false))
+                    rvChat.scrollToPosition(mensajes.size - 1)
+
+                    if (respuestaIA.esBorrador) {
+                        cardDraftContainer.visibility = View.VISIBLE
+                    }
+                } else {
+                    chatAdapter.agregarMensaje(ChatMessage("Lo siento, tuve un problema procesando eso. Intenta de nuevo.", false))
+                    rvChat.scrollToPosition(mensajes.size - 1)
+                }
+            } catch (e: Exception) {
+                mensajes.removeAt(loadingIndex)
+                chatAdapter.notifyItemRemoved(loadingIndex)
+                chatAdapter.agregarMensaje(ChatMessage("Error de conexión con el servidor IA.", false))
+                rvChat.scrollToPosition(mensajes.size - 1)
+            }
         }
     }
 }

@@ -16,6 +16,8 @@ import com.example.huellaapp.model.Mascota
 import com.example.huellaapp.network.RetrofitClient
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.coroutines.launch
+import android.content.Context
+import com.example.huellaapp.utils.ImageUtils
 
 class MainActivity : AppCompatActivity() {
 
@@ -33,6 +35,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var chipTodos: TextView
     private lateinit var chipPerdidos: TextView
     private lateinit var chipEnCasa: TextView
+    private var esMisReportes: Boolean = false
 
     // Adaptador y Datos
     private lateinit var mascotaAdapter: MascotaAdapter
@@ -103,12 +106,23 @@ class MainActivity : AppCompatActivity() {
         chipEnCasa.setOnClickListener { seleccionarFiltro(chipEnCasa, "EN_CASA") }
 
         // Traer datos de la API
+        val prefs = getSharedPreferences("HuellAppPrefs", MODE_PRIVATE)
+        RetrofitClient.authToken = prefs.getString("token", null)
+        
+        esMisReportes = intent.getStringExtra("FILTRO") == "MIS_REPORTES"
+        
         cargarMascotas()
     }
 
     override fun onResume() {
         super.onResume()
         cargarMascotas()
+        
+        val prefs = getSharedPreferences("HuellAppPrefs", MODE_PRIVATE)
+        val fotoGuardada = prefs.getString("fotoPerfil", "")
+        if (!fotoGuardada.isNullOrEmpty()) {
+            ImageUtils.cargarBase64EnImageView(fotoGuardada, ivProfileUser)
+        }
     }
 
     private fun cargarMascotas() {
@@ -159,10 +173,19 @@ class MainActivity : AppCompatActivity() {
         chipSeleccionado.setTextColor(getColor(R.color.white))
 
         // 3. Filtrar
-        val listaFiltrada = if (estado == "TODOS") {
+        var listaFiltrada = if (estado == "TODOS") {
             listaOriginal
         } else {
             listaOriginal.filter { it.estado == estado }
+        }
+
+        if (esMisReportes) {
+            val prefs = getSharedPreferences("HuellAppPrefs", MODE_PRIVATE)
+            val myUserId = prefs.getString("userId", "")
+            listaFiltrada = listaFiltrada.filter { it.usuarioId == myUserId }
+            tvError.text = "No tienes reportes creados."
+        } else {
+            tvError.text = "No hay resultados para este filtro."
         }
 
         // 4. Mostrar

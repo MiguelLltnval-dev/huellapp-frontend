@@ -7,6 +7,10 @@ import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
+import com.example.huellaapp.model.RecuperarRequest
+import com.example.huellaapp.network.RetrofitClient
+import kotlinx.coroutines.launch
 
 class RecuperarAccesoActivity : AppCompatActivity() {
 
@@ -35,13 +39,30 @@ class RecuperarAccesoActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            // Simulación de envío
-            Toast.makeText(this, "Enlace de recuperación enviado a $email", Toast.LENGTH_LONG).show()
-            finish() // Regresar al login
+            btnEnviarEnlace.isEnabled = false
+            btnEnviarEnlace.text = "Enviando..."
+
+            lifecycleScope.launch {
+                try {
+                    val response = RetrofitClient.apiService.recuperarPassword(RecuperarRequest(email))
+                    if (response.isSuccessful) {
+                        Toast.makeText(this@RecuperarAccesoActivity, "Enlace de recuperación enviado a $email", Toast.LENGTH_LONG).show()
+                        finish()
+                    } else {
+                        Toast.makeText(this@RecuperarAccesoActivity, "Error: El correo no existe.", Toast.LENGTH_SHORT).show()
+                        btnEnviarEnlace.isEnabled = true
+                        btnEnviarEnlace.text = "Enviar enlace de recuperación"
+                    }
+                } catch (e: Exception) {
+                    Toast.makeText(this@RecuperarAccesoActivity, "Error de conexión", Toast.LENGTH_SHORT).show()
+                    btnEnviarEnlace.isEnabled = true
+                    btnEnviarEnlace.text = "Enviar enlace de recuperación"
+                }
+            }
         }
 
         tvVolverLogin.setOnClickListener {
-            finish() // Cierra la actividad actual
+            finish() 
         }
     }
 }

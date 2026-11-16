@@ -5,6 +5,10 @@ import com.example.huellaapp.model.EstadoRequest
 import com.example.huellaapp.model.LoginRequest
 import com.example.huellaapp.model.Mascota
 import com.example.huellaapp.model.RegistroRequest
+import com.example.huellaapp.model.PerfilRequest
+import com.example.huellaapp.model.RecuperarRequest
+import com.example.huellaapp.model.ChatRequest
+import com.example.huellaapp.model.ChatResponse
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -36,4 +40,18 @@ interface ApiService {
 
     @POST("usuarios/login")
     suspend fun iniciarSesion(@Body request: LoginRequest): Response<AuthResponse>
+
+    @PATCH("usuarios/{id}/perfil")
+    suspend fun actualizarPerfilUsuario(
+        @Path("id") id: String,
+        @Body request: PerfilRequest
+    ): Response<AuthResponse>
+
+    @POST("usuarios/recuperar")
+    suspend fun recuperarPassword(@Body request: RecuperarRequest): Response<AuthResponse>
+
+    // --- ENDPOINTS ASISTENTE IA ---
+
+    @POST("ia/chat")
+    suspend fun chatearConIA(@Body request: ChatRequest): Response<ChatResponse>
 }

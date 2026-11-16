@@ -8,8 +8,8 @@ data class Mascota(
     val especie: String,
     val color: String,
     val ciudad: String,
-    val estado: String = "PERDIDO", // Nuevo campo del backend
-    val fotoUrl: String? = null,    // Nuevo campo del backend
-    // Agregamos usuarioId quemado (mock) para cumplir con el backend
-    val usuarioId: String = "64c9f1e1e4b0a2a1f0a1b2c3" 
+    val estado: String = "PERDIDO",
+    val fotoUrl: String? = null,
+    val usuarioId: String? = null,
+    val celularDueno: String? = null // El nuevo campo que envía el backend
 )

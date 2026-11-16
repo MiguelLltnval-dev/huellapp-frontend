@@ -70,6 +70,8 @@ class MascotaAdapter(private var listaMascotas: List<Mascota>) :
                 putExtra("ciudad", mascota.ciudad)
                 putExtra("estado", mascota.estado)
                 putExtra("fotoUrl", mascota.fotoUrl)
+                putExtra("usuarioId", mascota.usuarioId)
+                putExtra("celularDueno", mascota.celularDueno)
             }
             context.startActivity(intent)
         }

@@ -29,9 +29,40 @@ data class UsuarioData(
     val email: String?,
     val celular: String?,
     val departamento: String?,
-    val ciudad: String?
+    val ciudad: String?,
+    val fotoPerfil: String? // Campo nuevo para la imagen
+)
+
+data class PerfilRequest(
+    val nombre: String,
+    @SerializedName("telefono")
+    val celular: String,
+    val departamento: String,
+    val ciudad: String,
+    val fotoPerfil: String
 )
 
 data class EstadoRequest(
     val estado: String
+)
+
+data class RecuperarRequest(
+    val email: String
+)
+
+data class ChatRequest(
+    val mensaje: String
+)
+
+data class ChatResponse(
+    val respuesta: String,
+    val esBorrador: Boolean = false,
+    val mascotaGenerada: MascotaBorrador? = null
+)
+
+data class MascotaBorrador(
+    val especie: String?,
+    val raza: String?,
+    val color: String?,
+    val ciudad: String?
 )

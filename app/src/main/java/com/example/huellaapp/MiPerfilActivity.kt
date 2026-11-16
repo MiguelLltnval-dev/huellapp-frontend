@@ -9,6 +9,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import com.example.huellaapp.utils.ImageUtils
 
 class MiPerfilActivity : AppCompatActivity() {
 
@@ -16,6 +17,7 @@ class MiPerfilActivity : AppCompatActivity() {
     private lateinit var tvCiudadPerfil: TextView
     private lateinit var tvCorreoPerfil: TextView
     private lateinit var tvCelularPerfil: TextView
+    private lateinit var ivAvatar: ImageView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,6 +30,7 @@ class MiPerfilActivity : AppCompatActivity() {
         tvCiudadPerfil = findViewById(R.id.tvCiudadPerfil)
         tvCorreoPerfil = findViewById(R.id.tvCorreoPerfil)
         tvCelularPerfil = findViewById(R.id.tvCelularPerfil)
+        ivAvatar = findViewById(R.id.ivAvatar)
 
         // Opciones del Menú
         val opcReportes: TextView = findViewById(R.id.opcReportes)
@@ -98,10 +101,15 @@ class MiPerfilActivity : AppCompatActivity() {
         
         val depto = prefs.getString("departamento", "Departamento")
         val ciudad = prefs.getString("ciudad", "Ciudad no definida")
+        val fotoGuardada = prefs.getString("fotoPerfil", "")
 
         tvNombrePerfil.text = nombre
         tvCorreoPerfil.text = correo
         tvCelularPerfil.text = celular
+        
+        if (!fotoGuardada.isNullOrEmpty()) {
+            ImageUtils.cargarBase64EnImageView(fotoGuardada, ivAvatar)
+        }
         
         // Unimos Ciudad y Departamento para mostrar en el perfil
         if (ciudad == "Ciudad no definida" || depto == "Departamento") {
