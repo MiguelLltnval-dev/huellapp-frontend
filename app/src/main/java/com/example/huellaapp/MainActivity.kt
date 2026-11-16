@@ -35,6 +35,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var chipTodos: TextView
     private lateinit var chipPerdidos: TextView
     private lateinit var chipEnCasa: TextView
+    private lateinit var tvAlertaComunitaria: TextView
     private var esMisReportes: Boolean = false
 
     // Adaptador y Datos
@@ -57,6 +58,7 @@ class MainActivity : AppCompatActivity() {
         chipTodos = findViewById(R.id.chipTodos)
         chipPerdidos = findViewById(R.id.chipPerdidos)
         chipEnCasa = findViewById(R.id.chipEnCasa)
+        tvAlertaComunitaria = findViewById(R.id.tvAlertaComunitaria)
 
         // Configurar RecyclerView
         rvDashboardMascotas.layoutManager = LinearLayoutManager(this)
@@ -143,9 +145,12 @@ class MainActivity : AppCompatActivity() {
                     if (listaOriginal.isEmpty()) {
                         tvError.text = "Aún no hay reportes de mascotas."
                         tvError.visibility = View.VISIBLE
+                        tvAlertaComunitaria.text = "Alerta Comunitaria: 0 mascotas perdidas."
                     } else {
                         chipTodos.text = "Todos (${listaOriginal.size})"
                         seleccionarFiltro(chipTodos, "TODOS") // Aplica el listado en la UI
+                        val perdidosCount = listaOriginal.count { it.estado == "PERDIDO" }
+                        tvAlertaComunitaria.text = "Alerta Comunitaria: $perdidosCount mascotas perdidas cerca."
                     }
                 } else {
                     tvError.text = "Error al cargar reportes: ${response.code()}"

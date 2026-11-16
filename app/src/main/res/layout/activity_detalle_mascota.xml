@@ -338,29 +338,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
-                android:orientation="horizontal"
-                android:weightSum="2">
-
-                <Button
-                    android:id="@+id/btnLlamarDueno"
-                    android:layout_width="0dp"
-                    android:layout_height="55dp"
-                    android:layout_weight="1"
-                    android:layout_marginEnd="8dp"
-                    android:background="@drawable/bg_button_orange"
-                    android:text="Llamar al dueño"
-                    android:textAllCaps="false"
-                    android:textColor="@color/white"
-                    android:textStyle="bold"
-                    app:icon="@android:drawable/ic_menu_call"
-                    app:iconTint="@color/white" />
+                android:orientation="horizontal">
 
                 <Button
                     android:id="@+id/btnCompartir"
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="55dp"
-                    android:layout_weight="1"
-                    android:layout_marginStart="8dp"
                     android:background="@drawable/bg_button_orange"
                     android:text="Compartir"
                     android:textAllCaps="false"

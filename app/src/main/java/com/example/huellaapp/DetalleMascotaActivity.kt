@@ -39,7 +39,6 @@ class DetalleMascotaActivity : AppCompatActivity() {
         val btnBackDetalle: ImageView = findViewById(R.id.btnBackDetalle)
         val btnShareDetalle: ImageView = findViewById(R.id.btnShareDetalle)
         btnMarcarEnCasa = findViewById(R.id.btnMarcarEnCasa) // Usamos TextView/Button
-        val btnLlamarDueno: TextView = findViewById(R.id.btnLlamarDueno)
 
         // Referencias a las vistas de la Mascota
         val ivDetalleFoto: ImageView = findViewById(R.id.ivDetalleFoto)
@@ -71,7 +70,6 @@ class DetalleMascotaActivity : AppCompatActivity() {
         val estado = intent.getStringExtra("estado") ?: "PERDIDO"
         val fotoBase64 = intent.getStringExtra("fotoUrl")
         val duenoId = intent.getStringExtra("usuarioId")
-        val celularDueno = intent.getStringExtra("celularDueno")
 
         // 1.5 VERIFICAR SI SOY EL DUEÑO DE LA MASCOTA
         val prefs = getSharedPreferences("HuellAppPrefs", MODE_PRIVATE)
@@ -118,16 +116,14 @@ class DetalleMascotaActivity : AppCompatActivity() {
             startActivity(Intent.createChooser(shareIntent, "Compartir mascota vía..."))
         }
 
-        btnLlamarDueno.setOnClickListener {
-            if (!celularDueno.isNullOrEmpty()) {
-                val intentLlamada = Intent(Intent.ACTION_DIAL).apply {
-                    data = Uri.parse("tel:$celularDueno") 
-                }
-                startActivity(intentLlamada)
-                Toast.makeText(this, "Abriendo el marcador...", Toast.LENGTH_SHORT).show()
-            } else {
-                Toast.makeText(this, "El dueño no ha proporcionado un teléfono de contacto.", Toast.LENGTH_SHORT).show()
+        val btnCompartir: Button = findViewById(R.id.btnCompartir)
+        btnCompartir.setOnClickListener {
+            val shareIntent = Intent().apply {
+                action = Intent.ACTION_SEND
+                putExtra(Intent.EXTRA_TEXT, "¡Ayúdame a encontrar a $nombre! Es un $especieStr perdido en $ubicacionStr. Descarga HuellApp para ver más detalles.")
+                type = "text/plain"
             }
+            startActivity(Intent.createChooser(shareIntent, "Compartir mascota vía..."))
         }
 
         val ivMapaEstatico = findViewById<ImageView>(R.id.ivMapaEstatico)

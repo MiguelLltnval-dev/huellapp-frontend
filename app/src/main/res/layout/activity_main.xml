@@ -189,10 +189,11 @@
                     app:tint="#F57F17" />
 
                 <TextView
+                    android:id="@+id/tvAlertaComunitaria"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
-                    android:text="Alerta Comunitaria: 5 mascotas perdidas cerca."
+                    android:text="Alerta Comunitaria: 0 mascotas perdidas cerca."
                     android:textColor="#F57F17"
                     android:textSize="12sp"
                     android:textStyle="bold" />
@@ -259,7 +260,9 @@
     <LinearLayout
         android:id="@+id/bottomNavContainer"
         android:layout_width="0dp"
-        android:layout_height="65dp"
+        android:layout_height="wrap_content"
+        android:paddingBottom="24dp"
+        android:paddingTop="12dp"
         android:background="@color/white"
         android:elevation="16dp"
         android:gravity="center_vertical"
@@ -317,7 +320,7 @@
         android:id="@+id/fabAgregar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="35dp"
+        android:layout_marginBottom="48dp"
         android:src="@android:drawable/ic_input_add"
         app:backgroundTint="@color/huellapp_primary"
         app:elevation="24dp"
