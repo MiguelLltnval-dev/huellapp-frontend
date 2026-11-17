@@ -50,8 +50,16 @@ data class RecuperarRequest(
     val email: String
 )
 
+data class ConfirmarRecuperacionRequest(
+    val email: String,
+    val codigo: String,
+    val password: String
+)
+
 data class ChatRequest(
-    val mensaje: String
+    val mensaje: String,
+    val contexto: String? = null,
+    val modoPista: Boolean = false
 )
 
 data class ChatResponse(
@@ -59,14 +67,27 @@ data class ChatResponse(
     val esBorrador: Boolean = false,
     val mascotaGenerada: MascotaBorrador? = null,
     val esPista: Boolean = false,
-    val pistaGenerada: PistaBorrador? = null
+    val pistaGenerada: PistaBorrador? = null,
+    val coincidencias: List<MascotaCoincidencia>? = null,
+    val puedeReportar: Boolean = false,
+    val avistamiento: Boolean = false
+)
+
+data class MascotaCoincidencia(
+    @SerializedName("_id") val id: String,
+    val nombre: String,
+    val especie: String,
+    val color: String?,
+    val raza: String?,
+    val ciudad: String?
 )
 
 data class MascotaBorrador(
     val especie: String?,
     val raza: String?,
     val color: String?,
-    val ciudad: String?
+    val ciudad: String?,
+    val nombre: String?
 )
 
 data class PistaBorrador(

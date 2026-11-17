@@ -7,6 +7,7 @@ import com.example.huellaapp.model.Mascota
 import com.example.huellaapp.model.RegistroRequest
 import com.example.huellaapp.model.PerfilRequest
 import com.example.huellaapp.model.RecuperarRequest
+import com.example.huellaapp.model.ConfirmarRecuperacionRequest
 import com.example.huellaapp.model.ChatRequest
 import com.example.huellaapp.model.ChatResponse
 import com.example.huellaapp.model.Pista
@@ -24,6 +25,9 @@ interface ApiService {
 
     @GET("mascotas")
     suspend fun obtenerMascotas(): Response<List<Mascota>>
+
+    @GET("mascotas/{id}")
+    suspend fun obtenerMascota(@Path("id") id: String): Response<Mascota>
 
     @POST("mascotas")
     suspend fun registrarMascota(@Body mascota: Mascota): Response<Mascota>
@@ -60,6 +64,9 @@ interface ApiService {
 
     @POST("usuarios/recuperar")
     suspend fun recuperarPassword(@Body request: RecuperarRequest): Response<AuthResponse>
+
+    @POST("usuarios/recuperar/confirmar")
+    suspend fun confirmarRecuperacion(@Body request: ConfirmarRecuperacionRequest): Response<AuthResponse>
 
     // --- ENDPOINTS ASISTENTE IA ---
 

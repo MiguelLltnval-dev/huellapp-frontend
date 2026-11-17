@@ -29,6 +29,17 @@ import java.util.Calendar
 
 class CrearMascotaActivity : AppCompatActivity() {
 
+    companion object {
+        fun crearIntent(context: android.content.Context, borrador: com.example.huellaapp.model.MascotaBorrador?) =
+            Intent(context, CrearMascotaActivity::class.java).apply {
+                putExtra("nombre", borrador?.nombre)
+                putExtra("especie", borrador?.especie)
+                putExtra("raza", borrador?.raza)
+                putExtra("color", borrador?.color)
+                putExtra("ciudad", borrador?.ciudad)
+            }
+    }
+
     private lateinit var ivBack: ImageView
     private lateinit var btnCapturarFoto: LinearLayout
     private lateinit var ivFotoPreview: ImageView
@@ -115,6 +126,25 @@ class CrearMascotaActivity : AppCompatActivity() {
         val adapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, ciudades)
         autoCompleteCiudad.setAdapter(adapter)
 
+        if (savedInstanceState == null) {
+            etNombre.setText(intent.getStringExtra("nombre"))
+            etRaza.setText(intent.getStringExtra("raza"))
+            etColor.setText(intent.getStringExtra("color"))
+            autoCompleteCiudad.setText(intent.getStringExtra("ciudad"), false)
+        }
+        val especieInicial = savedInstanceState?.getString("especieSeleccionada")
+            ?: intent.getStringExtra("especie")
+        when (especieInicial?.lowercase()) {
+            "perro" -> seleccionarEspecie("Perro")
+            "gato" -> seleccionarEspecie("Gato")
+            "otro" -> seleccionarEspecie("Otro")
+            null, "" -> Unit
+            else -> {
+                seleccionarEspecie("Otro")
+                etEspecieOtro.setText(especieInicial)
+            }
+        }
+
         // 5. Configurar DatePicker para la Fecha
         etFecha.setOnClickListener {
             mostrarSelectorFecha()
@@ -124,6 +154,11 @@ class CrearMascotaActivity : AppCompatActivity() {
         btnRegistrarMascota.setOnClickListener {
             validarYRegistrarMascota()
         }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putString("especieSeleccionada", especieSeleccionada)
     }
 
     private fun seleccionarEspecie(especie: String) {

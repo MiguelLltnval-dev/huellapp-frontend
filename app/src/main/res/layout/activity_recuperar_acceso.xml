@@ -38,7 +38,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="Ingresa el correo con el que te registraste y te enviaremos un enlace para recuperar tu cuenta."
+        android:text="Solicita un código a tu correo registrado para crear una nueva contraseña."
         android:textAlignment="center"
         android:textColor="@color/huellapp_text_hint"
         app:layout_constraintEnd_toEndOf="parent"
@@ -85,12 +85,20 @@
             android:layout_height="55dp"
             android:layout_marginTop="24dp"
             android:background="@drawable/bg_button_orange"
-            android:text="Enviar Enlace ↗"
+            android:text="Enviar código"
             android:textAllCaps="false"
             android:textColor="@color/white"
             android:textSize="16sp"
             android:textStyle="bold" />
 
+        <Button
+            android:id="@+id/btnYaTengoCodigo"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Ya tengo un código"
+            android:textAllCaps="false"
+            android:textColor="@color/huellapp_primary" />
     </LinearLayout>
 
     <TextView

@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.huellaapp.adapter.MascotaAdapter
 import com.example.huellaapp.model.Mascota
+import com.example.huellaapp.model.esEstadoEnCasa
 import com.example.huellaapp.network.RetrofitClient
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.coroutines.launch
@@ -183,7 +184,7 @@ class MainActivity : AppCompatActivity() {
         var listaFiltrada = if (estado == "TODOS") {
             listaOriginal
         } else {
-            listaOriginal.filter { it.estado == estado }
+            listaOriginal.filter { if (estado.esEstadoEnCasa()) it.estado.esEstadoEnCasa() else it.estado == estado }
         }
 
         if (esMisReportes) {

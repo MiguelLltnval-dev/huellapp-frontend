@@ -9,7 +9,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.huellaapp.R
 import com.example.huellaapp.model.ChatMessage
 
-class ChatAdapter(private val listaMensajes: MutableList<ChatMessage>) :
+class ChatAdapter(
+    private val listaMensajes: MutableList<ChatMessage>,
+    private val alPulsarAccion: (ChatMessage) -> Unit
+) :
     RecyclerView.Adapter<ChatAdapter.ChatViewHolder>() {
 
     class ChatViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -37,6 +40,12 @@ class ChatAdapter(private val listaMensajes: MutableList<ChatMessage>) :
             holder.llAiMessage.visibility = View.VISIBLE
             holder.llUserMessage.visibility = View.GONE
             holder.tvAiText.text = mensaje.texto
+            val tieneAccion = mensaje.resultado != null || mensaje.abrirReporte
+            holder.tvAiText.setOnClickListener(if (tieneAccion) View.OnClickListener {
+                alPulsarAccion(mensaje)
+            } else null)
+            holder.tvAiText.isClickable = tieneAccion
+            holder.tvAiText.isFocusable = tieneAccion
         }
     }
 

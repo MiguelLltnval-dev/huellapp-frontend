@@ -15,11 +15,27 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.huellaapp.adapter.PistaAdapter
 import com.example.huellaapp.model.EstadoRequest
+import com.example.huellaapp.model.esEstadoEnCasa
 import com.example.huellaapp.network.RetrofitClient
 import com.example.huellaapp.utils.ImageUtils
 import kotlinx.coroutines.launch
 
 class DetalleMascotaActivity : AppCompatActivity() {
+
+    companion object {
+        fun crearIntent(context: android.content.Context, mascota: com.example.huellaapp.model.Mascota) =
+            Intent(context, DetalleMascotaActivity::class.java).apply {
+                putExtra("id", mascota.id)
+                putExtra("nombre", mascota.nombre)
+                putExtra("especie", mascota.especie)
+                putExtra("color", mascota.color)
+                putExtra("ciudad", mascota.ciudad)
+                putExtra("estado", mascota.estado)
+                putExtra("fotoUrl", mascota.fotoUrl)
+                putExtra("usuarioId", mascota.usuarioId)
+                putExtra("celularDueno", mascota.celularDueno)
+            }
+    }
 
     private lateinit var tvDetalleEstado: TextView
     private lateinit var btnMarcarEnCasa: TextView
@@ -144,12 +160,18 @@ class DetalleMascotaActivity : AppCompatActivity() {
             val intentPista = Intent(this, AsistenteIAActivity::class.java)
             intentPista.putExtra("CONTEXTO_MASCOTA", nombre)
             intentPista.putExtra("ID_MASCOTA", mascotaId)
+            intentPista.putExtra("TEXTO_AVISTAMIENTO", intent.getStringExtra("TEXTO_AVISTAMIENTO"))
             startActivity(intentPista)
             Toast.makeText(this, "Dile a la IA dónde lo viste", Toast.LENGTH_SHORT).show()
         }
 
         btnMarcarEnCasa.setOnClickListener {
-            marcarMascotaComoEnCasa()
+            androidx.appcompat.app.AlertDialog.Builder(this)
+                .setTitle("¿La mascota ya está en casa?")
+                .setMessage("El reporte se actualizará para toda la comunidad.")
+                .setNegativeButton("Cancelar", null)
+                .setPositiveButton("Confirmar") { _, _ -> marcarMascotaComoEnCasa() }
+                .show()
         }
     }
 
@@ -184,7 +206,7 @@ class DetalleMascotaActivity : AppCompatActivity() {
     }
 
     private fun actualizarUIEstado(estado: String) {
-        if (estado == "EN_CASA") {
+        if (estado.esEstadoEnCasa()) {
             tvDetalleEstado.text = "✓ EN CASA"
             tvDetalleEstado.setTextColor(Color.parseColor("#4CAF50"))
             tvDetalleEstado.setBackgroundResource(R.drawable.bg_badge_en_casa)
@@ -196,6 +218,8 @@ class DetalleMascotaActivity : AppCompatActivity() {
             // Solo mostrar el botón de "Marcar en Casa" si soy el dueño
             btnMarcarEnCasa.visibility = if (esMiMascota) View.VISIBLE else View.GONE
         }
+        findViewById<Button>(R.id.btnAgregarPista).visibility =
+            if (estado.esEstadoEnCasa()) View.GONE else View.VISIBLE
     }
 
     private fun marcarMascotaComoEnCasa() {
@@ -214,9 +238,11 @@ class DetalleMascotaActivity : AppCompatActivity() {
                     EstadoRequest("EN_CASA")
                 )
 
-                if (response.isSuccessful) {
+                val estadoGuardado = response.body()?.estado
+                if (response.isSuccessful && estadoGuardado != null) {
                     Toast.makeText(this@DetalleMascotaActivity, "¡Mascota marcada como EN CASA!", Toast.LENGTH_SHORT).show()
-                    actualizarUIEstado("EN_CASA")
+                    intent.putExtra("estado", estadoGuardado)
+                    actualizarUIEstado(estadoGuardado)
                 } else {
                     Toast.makeText(this@DetalleMascotaActivity, "Error al actualizar: ${response.code()}", Toast.LENGTH_SHORT).show()
                     btnMarcarEnCasa.isEnabled = true

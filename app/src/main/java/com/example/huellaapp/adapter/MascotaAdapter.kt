@@ -1,6 +1,5 @@
 package com.example.huellaapp.adapter
 
-import android.content.Intent
 import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
@@ -11,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.huellaapp.DetalleMascotaActivity
 import com.example.huellaapp.R
 import com.example.huellaapp.model.Mascota
+import com.example.huellaapp.model.esEstadoEnCasa
 import com.example.huellaapp.utils.ImageUtils
 
 class MascotaAdapter(private var listaMascotas: List<Mascota>) :
@@ -42,7 +42,7 @@ class MascotaAdapter(private var listaMascotas: List<Mascota>) :
         holder.tvUbicacion.text = ciudadBase
 
         // Lógica visual del Estado (Insignia)
-        if (mascota.estado == "EN_CASA") {
+        if (mascota.estado.esEstadoEnCasa()) {
             holder.tvEstado.text = "✓ EN CASA"
             holder.tvEstado.setTextColor(Color.parseColor("#4CAF50"))
             holder.tvEstado.setBackgroundResource(R.drawable.bg_badge_en_casa)
@@ -62,18 +62,7 @@ class MascotaAdapter(private var listaMascotas: List<Mascota>) :
         // Navegación al detalle
         holder.itemView.setOnClickListener {
             val context = holder.itemView.context
-            val intent = Intent(context, DetalleMascotaActivity::class.java).apply {
-                putExtra("id", mascota.id)
-                putExtra("nombre", mascota.nombre)
-                putExtra("especie", mascota.especie)
-                putExtra("color", mascota.color)
-                putExtra("ciudad", mascota.ciudad)
-                putExtra("estado", mascota.estado)
-                putExtra("fotoUrl", mascota.fotoUrl)
-                putExtra("usuarioId", mascota.usuarioId)
-                putExtra("celularDueno", mascota.celularDueno)
-            }
-            context.startActivity(intent)
+            context.startActivity(DetalleMascotaActivity.crearIntent(context, mascota))
         }
     }
 

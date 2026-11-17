@@ -15,10 +15,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.huellaapp.adapter.ChatAdapter
 import com.example.huellaapp.model.ChatMessage
 import com.example.huellaapp.model.ChatRequest
+import com.example.huellaapp.model.MascotaCoincidencia
 import com.example.huellaapp.model.PistaBorrador
 import com.example.huellaapp.model.PistaRequest
 import com.example.huellaapp.network.RetrofitClient
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.CancellationException
 import org.json.JSONObject
 
 class AsistenteIAActivity : AppCompatActivity() {
@@ -35,6 +37,7 @@ class AsistenteIAActivity : AppCompatActivity() {
     
     private var pistaBorradorActual: PistaBorrador? = null
     private var idMascota: String? = null
+    private var abriendoDetalle = false
     private lateinit var tvDraftDetails: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -51,17 +54,24 @@ class AsistenteIAActivity : AppCompatActivity() {
         
         idMascota = intent.getStringExtra("ID_MASCOTA")
 
-        chatAdapter = ChatAdapter(mensajes)
+        chatAdapter = ChatAdapter(mensajes) { mensaje ->
+            if (mensaje.resultado != null) {
+                abrirDetalle(mensaje.resultado, mensaje.textoAvistamiento)
+            } else if (mensaje.abrirReporte) {
+                startActivity(CrearMascotaActivity.crearIntent(this, mensaje.borrador))
+            }
+        }
         rvChat.layoutManager = LinearLayoutManager(this).apply {
             stackFromEnd = true
         }
         rvChat.adapter = chatAdapter
 
         val contextoMascota = intent.getStringExtra("CONTEXTO_MASCOTA")
+        if (savedInstanceState == null) etChatInput.setText(intent.getStringExtra("TEXTO_AVISTAMIENTO"))
         if (!contextoMascota.isNullOrEmpty()) {
             chatAdapter.agregarMensaje(ChatMessage("¡Hola! Veo que quieres reportar una pista sobre $contextoMascota. Dime, ¿dónde lo viste o qué detalles recuerdas?", false))
         } else {
-            chatAdapter.agregarMensaje(ChatMessage("¡Hola! Soy tu asistente IA de HuellApp. ¿Viste alguna mascota perdida o necesitas ayuda?", false))
+            chatAdapter.agregarMensaje(ChatMessage("¡Hola! Si se perdió tu mascota, dime cómo es y dónde se perdió. Buscaré reportes parecidos en HuellApp.", false))
         }
 
         ivBackChat.setOnClickListener { finish() }
@@ -94,7 +104,8 @@ class AsistenteIAActivity : AppCompatActivity() {
                             Toast.makeText(this@AsistenteIAActivity, "¡Pista guardada con éxito!", Toast.LENGTH_SHORT).show()
                             finish()
                         } else {
-                            Toast.makeText(this@AsistenteIAActivity, "Error al publicar", Toast.LENGTH_SHORT).show()
+                            val aviso = if (res.code() == 409) "La mascota ya está en casa." else "Error al publicar"
+                            Toast.makeText(this@AsistenteIAActivity, aviso, Toast.LENGTH_SHORT).show()
                             btnPublicarPista.isEnabled = true
                             btnPublicarPista.text = "Publicar Pista"
                         }
@@ -104,65 +115,94 @@ class AsistenteIAActivity : AppCompatActivity() {
                         btnPublicarPista.text = "Publicar Pista"
                     }
                 }
-            } else {
-                cardDraftContainer.visibility = View.GONE
-                Toast.makeText(this, "La IA publicará esta información pronto en la mascota.", Toast.LENGTH_SHORT).show()
-                finish()
+            }
+        }
+    }
+
+    private fun abrirDetalle(resultado: MascotaCoincidencia, avistamiento: String?) {
+        if (abriendoDetalle) return
+        abriendoDetalle = true
+        lifecycleScope.launch {
+            try {
+                val respuesta = RetrofitClient.apiService.obtenerMascota(resultado.id)
+                val mascota = respuesta.body()
+                if (respuesta.isSuccessful && mascota != null) {
+                    startActivity(DetalleMascotaActivity.crearIntent(this@AsistenteIAActivity, mascota).apply {
+                        putExtra("TEXTO_AVISTAMIENTO", avistamiento)
+                    })
+                    return@launch
+                }
+                Toast.makeText(this@AsistenteIAActivity, "No se pudo abrir el reporte.", Toast.LENGTH_SHORT).show()
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                Toast.makeText(this@AsistenteIAActivity, "Error de conexión al abrir el reporte.", Toast.LENGTH_SHORT).show()
+            } finally {
+                abriendoDetalle = false
             }
         }
     }
 
     private fun consultarAI(mensajeUsuario: String) {
-        // Mostramos un mensaje de "escribiendo"
+        btnSendChat.isEnabled = false
         val loadingIndex = mensajes.size
         chatAdapter.agregarMensaje(ChatMessage("Escribiendo...", false))
         rvChat.scrollToPosition(loadingIndex)
 
         lifecycleScope.launch {
-            try {
-                // Aumentamos los timeouts en Retrofit para esta llamada, 
-                // ya que las IA pueden tardar varios segundos en generar respuestas completas.
-                val response = RetrofitClient.apiService.chatearConIA(ChatRequest(mensajeUsuario))
-                
-                // Removemos el mensaje de cargando
-                mensajes.removeAt(loadingIndex)
-                chatAdapter.notifyItemRemoved(loadingIndex)
-
-                if (response.isSuccessful && response.body() != null) {
-                    val respuestaIA = response.body()!!
-                    
-                    chatAdapter.agregarMensaje(ChatMessage(respuestaIA.respuesta, false))
-                    rvChat.scrollToPosition(mensajes.size - 1)
-
-                    if (respuestaIA.esBorrador) {
-                        cardDraftContainer.visibility = View.VISIBLE
-                    } else if (respuestaIA.esPista && respuestaIA.pistaGenerada != null) {
-                        cardDraftContainer.visibility = View.VISIBLE
-                        pistaBorradorActual = respuestaIA.pistaGenerada
-                        tvDraftDetails.text = "Ubicación: ${pistaBorradorActual?.ubicacion}\nDetalles: ${pistaBorradorActual?.descripcion}"
-                    }
-                } else {
-                    var errorMsg = response.message()
-                    try {
-                        val errorStr = response.errorBody()?.string()
-                        if (!errorStr.isNullOrEmpty()) {
-                            // Intentamos parsear el JSON de error que manda Node.js
-                            val jsonObj = JSONObject(errorStr)
-                            errorMsg = jsonObj.optString("error", jsonObj.optString("mensaje", errorStr))
-                        }
-                    } catch (e: Exception) {
-                        // Fallback si no es JSON
-                    }
-                    
-                    chatAdapter.agregarMensaje(ChatMessage("Error: $errorMsg", false))
-                    rvChat.scrollToPosition(mensajes.size - 1)
-                }
+            val anteriores = mensajes.subList(0, (loadingIndex - 1).coerceAtLeast(0))
+                .filter { it.esUsuario }.takeLast(3).joinToString("\n") { it.texto }.takeLast(750)
+            val contexto = listOfNotNull(
+                intent.getStringExtra("CONTEXTO_MASCOTA")?.let { "Reporte abierto: $it" },
+                anteriores.takeIf { it.isNotBlank() }?.let { "Mensajes anteriores del usuario:\n$it" }
+            ).joinToString("\n")
+            val request = ChatRequest(
+                mensajeUsuario,
+                contexto,
+                modoPista = idMascota != null
+            )
+            val response = try {
+                RetrofitClient.apiService.chatearConIA(request)
+            } catch (e: CancellationException) {
+                throw e
             } catch (e: Exception) {
+                null
+            } finally {
                 mensajes.removeAt(loadingIndex)
                 chatAdapter.notifyItemRemoved(loadingIndex)
-                chatAdapter.agregarMensaje(ChatMessage("Error de conexión: ${e.message}", false))
-                rvChat.scrollToPosition(mensajes.size - 1)
+                btnSendChat.isEnabled = true
             }
+            val respuestaIA = response?.body()
+            if (respuestaIA != null) {
+                chatAdapter.agregarMensaje(ChatMessage(respuestaIA.respuesta, false))
+                for (resultado in respuestaIA.coincidencias.orEmpty()) {
+                    val atributos = listOf(resultado.especie, resultado.raza, resultado.color, resultado.ciudad)
+                        .filterNot { it.isNullOrBlank() }.joinToString(" · ")
+                    chatAdapter.agregarMensaje(ChatMessage(
+                        "${resultado.nombre}\n$atributos\nVer reporte", false, resultado = resultado,
+                        textoAvistamiento = mensajeUsuario.takeIf { respuestaIA.avistamiento }
+                    ))
+                }
+                if (respuestaIA.puedeReportar) {
+                    chatAdapter.agregarMensaje(ChatMessage(
+                        "Crear reporte de mascota perdida", false,
+                        abrirReporte = true, borrador = respuestaIA.mascotaGenerada
+                    ))
+                }
+                val pista = respuestaIA.pistaGenerada
+                if (idMascota != null && (respuestaIA.esPista || respuestaIA.esBorrador) &&
+                    !pista?.ubicacion.isNullOrBlank() && !pista?.descripcion.isNullOrBlank()) {
+                    pistaBorradorActual = pista
+                    tvDraftDetails.text = "Ubicación: ${pista?.ubicacion}\nDetalles: ${pista?.descripcion}"
+                    cardDraftContainer.visibility = View.VISIBLE
+                }
+            } else {
+                val error = runCatching {
+                    response?.errorBody()?.string()?.let { JSONObject(it).optString("error") }
+                }.getOrNull()?.takeIf { it.isNotBlank() }
+                chatAdapter.agregarMensaje(ChatMessage(error ?: "No se pudo consultar al asistente. Intenta de nuevo.", false))
+            }
+            rvChat.scrollToPosition(if (respuestaIA?.coincidencias != null) loadingIndex else mensajes.lastIndex)
         }
     }
 }

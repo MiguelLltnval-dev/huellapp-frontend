@@ -2,6 +2,8 @@ package com.example.huellaapp.model
 
 import com.google.gson.annotations.SerializedName
 
+fun String.esEstadoEnCasa(): Boolean = this == "EN CASA" || this == "EN_CASA"
+
 data class Mascota(
     @SerializedName("_id") val id: String? = null,
     val nombre: String,
