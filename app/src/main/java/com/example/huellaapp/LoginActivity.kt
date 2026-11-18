@@ -53,7 +53,7 @@ class LoginActivity : AppCompatActivity() {
 
     private fun validarYLoguear() {
         val email = etEmailLogin.text.toString().trim()
-        val password = etPasswordLogin.text.toString().trim()
+        val password = etPasswordLogin.text.toString()
 
         if (email.isEmpty() || password.isEmpty()) {
             Toast.makeText(this, "Por favor, completa todos los campos", Toast.LENGTH_SHORT).show()
@@ -89,6 +89,7 @@ class LoginActivity : AppCompatActivity() {
                         putString("celular", usuario?.celular)
                         putString("departamento", usuario?.departamento)
                         putString("ciudad", usuario?.ciudad)
+                        putString("fotoPerfil", usuario?.fotoPerfil ?: "")
                     }.apply()
                     
                     RetrofitClient.authToken = authResponse?.token

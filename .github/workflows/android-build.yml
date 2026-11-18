@@ -1,33 +1,54 @@
-name: Generar APK Automaticamente
-
+name: Compilar y publicar APK
 on:
   push:
-    branches: [ "master", "main" ]
-
+    branches: [master, main]
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: apk-entrega-final
+  cancel-in-progress: false
 jobs:
   build:
-    name: Compilar APK
     runs-on: ubuntu-latest
-
     steps:
-      - name: Clonar el repositorio
-        uses: actions/checkout@v4
-
-      - name: Configurar Java JDK 17
-        uses: actions/setup-java@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
         with:
+          distribution: temurin
           java-version: '17'
-          distribution: 'temurin'
           cache: gradle
-
-      - name: Dar permisos de ejecucion a Gradle
+      - name: Preparar Gradle
         run: chmod +x gradlew
-
-      - name: Compilar el APK
-        run: ./gradlew assembleDebug
-
-      - name: Subir APK para la Profesora
+      - name: Probar y compilar
+        run: ./gradlew --no-daemon testDebugUnitTest assembleDebug
+      - name: Preparar descarga
+        run: |
+          mkdir -p entrega
+          cp app/build/outputs/apk/debug/app-debug.apk entrega/HuellApp.apk
+          cd entrega
+          sha256sum HuellApp.apk > HuellApp.apk.sha256
+      - name: Conservar artefactos de la ejecución
         uses: actions/upload-artifact@v4
         with:
-          name: HuellApp-v1.0-Produccion.apk
-          path: app/build/outputs/apk/debug/app-debug.apk
+          name: HuellApp-apk
+          path: entrega/*
+          if-no-files-found: error
+      - name: Publicar APK con enlace permanente
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          COMMIT_SHA: ${{ github.sha }}
+        run: |
+          cat > entrega/notas.md <<EOF
+          APK de demostración académica generada automáticamente desde el commit $COMMIT_SHA.
+          Compilación debug para instalación directa en Android.
+          Descarga HuellApp.apk y consulta el SHA-256 adjunto.
+          EOF
+          if gh release view entrega-final >/dev/null 2>&1; then
+            gh api --method PATCH "repos/$GH_REPO/git/refs/tags/entrega-final" -f sha="$COMMIT_SHA" -F force=true
+            gh release edit entrega-final --title "HuellApp - última APK" --notes-file entrega/notas.md --latest
+          else
+            gh release create entrega-final --target "$COMMIT_SHA" --title "HuellApp - última APK" --notes-file entrega/notas.md --latest
+          fi
+          gh release upload entrega-final entrega/HuellApp.apk entrega/HuellApp.apk.sha256 --clobber

@@ -16,7 +16,7 @@ object RetrofitClient {
 
     // Agregamos un interceptor para ver el tráfico y los errores en el Logcat
     private val logging = HttpLoggingInterceptor().apply {
-        level = HttpLoggingInterceptor.Level.BODY
+        level = HttpLoggingInterceptor.Level.NONE
     }
 
     private val authInterceptor = Interceptor { chain ->

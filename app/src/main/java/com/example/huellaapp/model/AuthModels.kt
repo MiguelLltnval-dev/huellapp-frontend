@@ -35,7 +35,6 @@ data class UsuarioData(
 
 data class PerfilRequest(
     val nombre: String,
-    @SerializedName("telefono")
     val celular: String,
     val departamento: String,
     val ciudad: String,
