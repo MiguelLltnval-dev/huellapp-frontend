@@ -17,7 +17,7 @@
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:padding="16dp"
-        android:layout_marginTop="48dp"
+        android:layout_marginTop="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -59,7 +59,7 @@
                     android:background="@drawable/bg_alert_yellow"
                     android:paddingHorizontal="6dp"
                     android:paddingVertical="2dp"
-                    android:text="BETA COMERCIAL"
+                    android:visibility="gone" android:text="BETA COMERCIAL"
                     android:textColor="#F57F17"
                     android:textSize="10sp"
                     android:textStyle="bold" />
@@ -223,7 +223,7 @@
         <Button
             android:id="@+id/btnNotificar"
             android:layout_width="0dp"
-            android:layout_height="55dp"
+            android:layout_height="wrap_content" android:minHeight="55dp"
             android:background="@drawable/bg_button_orange"
             android:text="Notificarme del lanzamiento"
             android:textAllCaps="false"

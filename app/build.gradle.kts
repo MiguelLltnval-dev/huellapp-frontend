@@ -12,8 +12,8 @@ android {
         applicationId = "com.example.huellaapp"
         minSdk = 24
         targetSdk = 37
-        versionCode = 3
-        versionName = "1.0.2"
+        versionCode = 4
+        versionName = "1.0.3"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -41,7 +41,7 @@ dependencies {
     // Retrofit y Gson
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
-    
+
     // OkHttp Logging Interceptor (para ver errores de red en Logcat)
     implementation("com.squareup.okhttp3:logging-interceptor:4.11.0")
 

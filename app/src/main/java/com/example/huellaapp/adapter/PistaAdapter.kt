@@ -31,6 +31,7 @@ class PistaAdapter(private var pistas: List<Pista>) : RecyclerView.Adapter<Pista
     override fun getItemCount() = pistas.size
 
     fun actualizarPistas(nuevas: List<Pista>) {
+        if (pistas == nuevas) return
         pistas = nuevas
         notifyDataSetChanged()
     }

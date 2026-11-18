@@ -14,7 +14,7 @@ import com.example.huellaapp.model.LoginRequest
 import com.example.huellaapp.network.RetrofitClient
 import kotlinx.coroutines.launch
 
-class LoginActivity : AppCompatActivity() {
+class LoginActivity : ResponsiveActivity() {
 
     private lateinit var etEmailLogin: EditText
     private lateinit var etPasswordLogin: EditText
@@ -74,11 +74,11 @@ class LoginActivity : AppCompatActivity() {
         lifecycleScope.launch {
             try {
                 val response = RetrofitClient.apiService.iniciarSesion(request)
-                
+
                 if (response.isSuccessful) {
                     val authResponse = response.body()
                     val usuario = authResponse?.usuario
-                    
+
                     // GUARDAR TOKEN Y DATOS DEL USUARIO EN SHAREDPREFERENCES
                     val prefs = getSharedPreferences("HuellAppPrefs", MODE_PRIVATE)
                     prefs.edit().apply {
@@ -91,17 +91,17 @@ class LoginActivity : AppCompatActivity() {
                         putString("ciudad", usuario?.ciudad)
                         putString("fotoPerfil", usuario?.fotoPerfil ?: "")
                     }.apply()
-                    
+
                     RetrofitClient.authToken = authResponse?.token
 
                     Toast.makeText(this@LoginActivity, "¡Bienvenido a HuellApp!", Toast.LENGTH_SHORT).show()
-                    
+
                     // Ir a la pantalla principal
                     val intent = Intent(this@LoginActivity, MainActivity::class.java)
                     // Limpiamos el historial para que no pueda volver atrás al login
                     intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                     startActivity(intent)
-                    
+
                 } else {
                     Toast.makeText(this@LoginActivity, "Credenciales incorrectas", Toast.LENGTH_SHORT).show()
                     restaurarBoton()

@@ -16,7 +16,7 @@
         android:elevation="4dp"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:layout_marginTop="48dp"
+        android:layout_marginTop="16dp"
         android:padding="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -213,7 +213,7 @@
         <Button
             android:id="@+id/btnGuardarPerfil"
             android:layout_width="0dp"
-            android:layout_height="55dp"
+            android:layout_height="wrap_content" android:minHeight="55dp"
             android:background="@drawable/bg_button_orange"
             android:text="Guardar Cambios ✓"
             android:textAllCaps="false"

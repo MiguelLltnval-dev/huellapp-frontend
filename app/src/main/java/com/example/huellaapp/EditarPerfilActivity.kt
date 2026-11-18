@@ -23,14 +23,14 @@ import com.example.huellaapp.utils.LocationData
 import kotlinx.coroutines.launch
 import java.io.ByteArrayOutputStream
 
-class EditarPerfilActivity : AppCompatActivity() {
+class EditarPerfilActivity : ResponsiveActivity() {
 
     private lateinit var etEditNombre: EditText
     private lateinit var etEditCelular: EditText
     private lateinit var autoCompleteEditDepartamento: AutoCompleteTextView
     private lateinit var autoCompleteEditCiudad: AutoCompleteTextView
     private lateinit var btnGuardarPerfil: Button
-    
+
     private lateinit var ivEditAvatar: ImageView
     private lateinit var btnSeleccionarAvatar: LinearLayout
     private var fotoBase64: String? = null
@@ -67,12 +67,12 @@ class EditarPerfilActivity : AppCompatActivity() {
         autoCompleteEditDepartamento = findViewById(R.id.autoCompleteEditDepartamento)
         autoCompleteEditCiudad = findViewById(R.id.autoCompleteEditCiudad)
         btnGuardarPerfil = findViewById(R.id.btnGuardarPerfil)
-        
+
         ivEditAvatar = findViewById(R.id.ivEditAvatar)
         btnSeleccionarAvatar = findViewById(R.id.btnSeleccionarAvatar)
 
         ivBackEditar.setOnClickListener { finish() }
-        
+
         btnSeleccionarAvatar.setOnClickListener {
             selectorGaleria.launch("image/*")
         }
@@ -86,7 +86,7 @@ class EditarPerfilActivity : AppCompatActivity() {
         autoCompleteEditDepartamento.setOnItemClickListener { _, _, position, _ ->
             val deptSeleccionado = deptAdapter.getItem(position) ?: ""
             val ciudades = LocationData.departamentosYCiudades[deptSeleccionado] ?: emptyList()
-            
+
             val ciudadAdapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, ciudades)
             autoCompleteEditCiudad.setAdapter(ciudadAdapter)
             autoCompleteEditCiudad.text.clear()
@@ -103,7 +103,7 @@ class EditarPerfilActivity : AppCompatActivity() {
         etEditCelular.setText(prefs.getString("celular", ""))
         autoCompleteEditDepartamento.setText(prefs.getString("departamento", ""), false)
         autoCompleteEditCiudad.setText(prefs.getString("ciudad", ""), false)
-        
+
         // Cargar foto actual si existe
         val fotoGuardada = prefs.getString("fotoPerfil", "")
         if (!fotoGuardada.isNullOrEmpty()) {
@@ -113,7 +113,7 @@ class EditarPerfilActivity : AppCompatActivity() {
             ivEditAvatar.setPadding(0, 0, 0, 0)
             ivEditAvatar.scaleType = ImageView.ScaleType.CENTER_CROP
         }
-        
+
         // Cargar las ciudades del departamento guardado para que la lista funcione
         val deptGuardado = prefs.getString("departamento", "")
         if (!deptGuardado.isNullOrEmpty()) {

@@ -6,7 +6,7 @@ import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 
-class DirectorioVetActivity : AppCompatActivity() {
+class DirectorioVetActivity : ResponsiveActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

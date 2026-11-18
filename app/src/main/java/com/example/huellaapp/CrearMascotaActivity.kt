@@ -27,7 +27,7 @@ import kotlinx.coroutines.launch
 import java.io.ByteArrayOutputStream
 import java.util.Calendar
 
-class CrearMascotaActivity : AppCompatActivity() {
+class CrearMascotaActivity : ResponsiveActivity() {
 
     companion object {
         fun crearIntent(context: android.content.Context, borrador: com.example.huellaapp.model.MascotaBorrador?) =
@@ -44,7 +44,7 @@ class CrearMascotaActivity : AppCompatActivity() {
     private lateinit var btnCapturarFoto: LinearLayout
     private lateinit var ivFotoPreview: ImageView
     private lateinit var tvCambiarFoto: TextView
-    
+
     private lateinit var etNombre: EditText
     private lateinit var etRaza: EditText
     private lateinit var etColor: EditText
@@ -257,7 +257,7 @@ class CrearMascotaActivity : AppCompatActivity() {
         btnRegistrarMascota.isEnabled = false
         btnRegistrarMascota.text = "Guardando reporte..."
 
-        // Empaquetamos la información para enviarla al backend 
+        // Empaquetamos la información para enviarla al backend
         // ya que el backend solo espera "nombre, especie, color, ciudad".
         val colorYDetalles = "$color. Raza: $raza"
         val ciudadYFecha = "$ciudad. Perdido el: $fecha"

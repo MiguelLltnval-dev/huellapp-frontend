@@ -20,7 +20,7 @@ import kotlinx.coroutines.launch
 import android.content.Context
 import com.example.huellaapp.utils.ImageUtils
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : ResponsiveActivity() {
 
     // Vistas
     private lateinit var rvDashboardMascotas: RecyclerView
@@ -79,7 +79,7 @@ class MainActivity : AppCompatActivity() {
         btnAsistenteIAHeader.setOnClickListener {
             startActivity(Intent(this, AsistenteIAActivity::class.java))
         }
-        
+
         // Icono "IA" en el menú inferior
         findViewById<View>(R.id.navIA).setOnClickListener {
             startActivity(Intent(this, AsistenteIAActivity::class.java))
@@ -89,7 +89,7 @@ class MainActivity : AppCompatActivity() {
         ivProfileUser.setOnClickListener {
             startActivity(Intent(this, MiPerfilActivity::class.java))
         }
-        
+
         // Icono "Perfil" en el menú inferior
         findViewById<View>(R.id.navProfile).setOnClickListener {
             startActivity(Intent(this, MiPerfilActivity::class.java))
@@ -111,16 +111,16 @@ class MainActivity : AppCompatActivity() {
         // Traer datos de la API
         val prefs = getSharedPreferences("HuellAppPrefs", MODE_PRIVATE)
         RetrofitClient.authToken = prefs.getString("token", null)
-        
+
         esMisReportes = intent.getStringExtra("FILTRO") == "MIS_REPORTES"
-        
+
         cargarMascotas()
     }
 
     override fun onResume() {
         super.onResume()
         cargarMascotas()
-        
+
         val prefs = getSharedPreferences("HuellAppPrefs", MODE_PRIVATE)
         val fotoGuardada = prefs.getString("fotoPerfil", "")
         if (!fotoGuardada.isNullOrEmpty()) {
@@ -142,7 +142,7 @@ class MainActivity : AppCompatActivity() {
 
                 if (response.isSuccessful) {
                     listaOriginal = response.body() ?: emptyList()
-                    
+
                     if (listaOriginal.isEmpty()) {
                         tvError.text = "Aún no hay reportes de mascotas."
                         tvError.visibility = View.VISIBLE

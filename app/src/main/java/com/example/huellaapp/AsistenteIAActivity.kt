@@ -22,8 +22,12 @@ import com.example.huellaapp.network.RetrofitClient
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.CancellationException
 import org.json.JSONObject
+import com.google.gson.Gson
+import com.example.huellaapp.model.listaParaPublicar
+import android.widget.ScrollView
+import androidx.appcompat.app.AlertDialog
 
-class AsistenteIAActivity : AppCompatActivity() {
+class AsistenteIAActivity : ResponsiveActivity() {
 
     private lateinit var ivBackChat: ImageView
     private lateinit var rvChat: RecyclerView
@@ -34,7 +38,7 @@ class AsistenteIAActivity : AppCompatActivity() {
 
     private lateinit var chatAdapter: ChatAdapter
     private val mensajes = mutableListOf<ChatMessage>()
-    
+
     private var pistaBorradorActual: PistaBorrador? = null
     private var idMascota: String? = null
     private var abriendoDetalle = false
@@ -51,7 +55,9 @@ class AsistenteIAActivity : AppCompatActivity() {
         cardDraftContainer = findViewById(R.id.cardDraftContainer)
         btnPublicarPista = findViewById(R.id.btnPublicarPista)
         tvDraftDetails = findViewById(R.id.tvDraftDetails)
-        
+        tvDraftDetails.movementMethod = android.text.method.ScrollingMovementMethod()
+        findViewById<Button>(R.id.btnEditarPista).setOnClickListener { editarPista() }
+
         idMascota = intent.getStringExtra("ID_MASCOTA")
 
         chatAdapter = ChatAdapter(mensajes) { mensaje ->
@@ -74,6 +80,15 @@ class AsistenteIAActivity : AppCompatActivity() {
             chatAdapter.agregarMensaje(ChatMessage("¡Hola! Si se perdió tu mascota, dime cómo es y dónde se perdió. Buscaré reportes parecidos en HuellApp.", false))
         }
 
+        savedInstanceState?.getString("chat")?.let {
+            mensajes.clear()
+            mensajes.addAll(Gson().fromJson(it, Array<ChatMessage>::class.java).toList())
+            chatAdapter.notifyDataSetChanged()
+        }
+        savedInstanceState?.getString("pista")?.let {
+            pistaBorradorActual = Gson().fromJson(it, PistaBorrador::class.java)
+            mostrarBorrador()
+        }
         ivBackChat.setOnClickListener { finish() }
 
         btnSendChat.setOnClickListener {
@@ -81,7 +96,7 @@ class AsistenteIAActivity : AppCompatActivity() {
             if (texto.isNotEmpty()) {
                 chatAdapter.agregarMensaje(ChatMessage(texto, true))
                 etChatInput.text.clear()
-                rvChat.scrollToPosition(mensajes.size - 1)
+                desplazarChat(mensajes.size - 1)
 
                 consultarAI(texto)
             }
@@ -89,9 +104,10 @@ class AsistenteIAActivity : AppCompatActivity() {
 
         btnPublicarPista.setOnClickListener {
             if (pistaBorradorActual != null && idMascota != null) {
+                if (!btnSendChat.isEnabled || pistaBorradorActual?.listaParaPublicar() != true) return@setOnClickListener
                 btnPublicarPista.isEnabled = false
                 btnPublicarPista.text = "Publicando..."
-                
+
                 lifecycleScope.launch {
                     try {
                         val req = PistaRequest(
@@ -109,6 +125,8 @@ class AsistenteIAActivity : AppCompatActivity() {
                             btnPublicarPista.isEnabled = true
                             btnPublicarPista.text = "Publicar Pista"
                         }
+                    } catch(e: CancellationException) {
+                        throw e
                     } catch(e: Exception) {
                         Toast.makeText(this@AsistenteIAActivity, "Error de red", Toast.LENGTH_SHORT).show()
                         btnPublicarPista.isEnabled = true
@@ -143,11 +161,67 @@ class AsistenteIAActivity : AppCompatActivity() {
         }
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putString("chat", Gson().toJson(mensajes.filter { it.texto != "Escribiendo..." }))
+        outState.putString("pista", pistaBorradorActual?.let { Gson().toJson(it) })
+        super.onSaveInstanceState(outState)
+    }
+
+    private fun mostrarBorrador() {
+        val pista = pistaBorradorActual
+        cardDraftContainer.visibility = if (pista == null) View.GONE else View.VISIBLE
+        tvDraftDetails.text = "Ubicación: ${pista?.ubicacion.orEmpty()}\nDetalles: ${pista?.descripcion.orEmpty()}"
+        btnPublicarPista.isEnabled = pista?.listaParaPublicar() == true && btnSendChat.isEnabled
+    }
+
+    private fun editarPista() {
+        val pista = pistaBorradorActual ?: return
+        val box = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            setPadding(24, 8, 24, 8)
+        }
+        val ubicacion = EditText(this).apply { hint = "Ciudad, barrio o lugar"; setText(pista.ubicacion); maxLines = 3 }
+        val descripcion = EditText(this).apply { hint = "Detalles del avistamiento"; setText(pista.descripcion); minLines = 2; maxLines = 5 }
+        box.addView(ubicacion)
+        box.addView(descripcion)
+        val dialog = AlertDialog.Builder(this).setTitle("Revisar pista antes de publicar")
+            .setView(ScrollView(this).apply { addView(box) })
+            .setNegativeButton("Cancelar", null).setPositiveButton("Guardar cambios", null).create()
+        dialog.setOnShowListener {
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
+                val nueva = PistaBorrador(descripcion.text.toString().trim(), ubicacion.text.toString().trim())
+                if (!nueva.listaParaPublicar()) {
+                    ubicacion.error = if (nueva.ubicacion.isNullOrBlank()) "Indica dónde ocurrió" else null
+                    descripcion.error = if (nueva.descripcion.isNullOrBlank()) "Describe lo que viste" else null
+                } else {
+                    pistaBorradorActual = nueva
+                    mostrarBorrador()
+                    dialog.dismiss()
+                }
+            }
+        }
+        dialog.show()
+    }
+
+    override fun onViewportChanged(heightDp: Int, keyboardVisible: Boolean) {
+        findViewById<View>(R.id.headerChat)?.visibility =
+            if (keyboardVisible && heightDp < 240) View.GONE else View.VISIBLE
+    }
+
+    private fun desplazarChat(position: Int) {
+        rvChat.scrollToPosition(position)
+        findViewById<androidx.core.widget.NestedScrollView>(R.id.scrollChat).post {
+            findViewById<androidx.core.widget.NestedScrollView>(R.id.scrollChat).fullScroll(View.FOCUS_DOWN)
+        }
+    }
+
     private fun consultarAI(mensajeUsuario: String) {
         btnSendChat.isEnabled = false
+        btnPublicarPista.isEnabled = false
+        findViewById<Button>(R.id.btnEditarPista).isEnabled = false
         val loadingIndex = mensajes.size
         chatAdapter.agregarMensaje(ChatMessage("Escribiendo...", false))
-        rvChat.scrollToPosition(loadingIndex)
+        desplazarChat(loadingIndex)
 
         lifecycleScope.launch {
             val anteriores = mensajes.subList(0, (loadingIndex - 1).coerceAtLeast(0))
@@ -159,7 +233,8 @@ class AsistenteIAActivity : AppCompatActivity() {
             val request = ChatRequest(
                 mensajeUsuario,
                 contexto,
-                modoPista = idMascota != null
+                modoPista = idMascota != null,
+                pistaActual = pistaBorradorActual
             )
             val response = try {
                 RetrofitClient.apiService.chatearConIA(request)
@@ -171,6 +246,8 @@ class AsistenteIAActivity : AppCompatActivity() {
                 mensajes.removeAt(loadingIndex)
                 chatAdapter.notifyItemRemoved(loadingIndex)
                 btnSendChat.isEnabled = true
+                findViewById<Button>(R.id.btnEditarPista).isEnabled = true
+                mostrarBorrador()
             }
             val respuestaIA = response?.body()
             if (respuestaIA != null) {
@@ -190,11 +267,11 @@ class AsistenteIAActivity : AppCompatActivity() {
                     ))
                 }
                 val pista = respuestaIA.pistaGenerada
-                if (idMascota != null && (respuestaIA.esPista || respuestaIA.esBorrador) &&
-                    !pista?.ubicacion.isNullOrBlank() && !pista?.descripcion.isNullOrBlank()) {
-                    pistaBorradorActual = pista
-                    tvDraftDetails.text = "Ubicación: ${pista?.ubicacion}\nDetalles: ${pista?.descripcion}"
-                    cardDraftContainer.visibility = View.VISIBLE
+                if (idMascota != null) {
+                    pistaBorradorActual = pista?.takeIf {
+                        !it.descripcion.isNullOrBlank() || !it.ubicacion.isNullOrBlank()
+                    }
+                    mostrarBorrador()
                 }
             } else {
                 val error = runCatching {
@@ -202,7 +279,7 @@ class AsistenteIAActivity : AppCompatActivity() {
                 }.getOrNull()?.takeIf { it.isNotBlank() }
                 chatAdapter.agregarMensaje(ChatMessage(error ?: "No se pudo consultar al asistente. Intenta de nuevo.", false))
             }
-            rvChat.scrollToPosition(if (respuestaIA?.coincidencias != null) loadingIndex else mensajes.lastIndex)
+            desplazarChat(if (respuestaIA?.coincidencias != null) loadingIndex else mensajes.lastIndex)
         }
     }
 }

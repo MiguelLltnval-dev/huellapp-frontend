@@ -58,7 +58,8 @@ data class ConfirmarRecuperacionRequest(
 data class ChatRequest(
     val mensaje: String,
     val contexto: String? = null,
-    val modoPista: Boolean = false
+    val modoPista: Boolean = false,
+    val pistaActual: PistaBorrador? = null
 )
 
 data class ChatResponse(
@@ -98,6 +99,8 @@ data class PistaRequest(
     val descripcion: String,
     val ubicacion: String
 )
+
+fun PistaBorrador.listaParaPublicar(): Boolean = !descripcion.isNullOrBlank() && !ubicacion.isNullOrBlank()
 
 data class Pista(
     @SerializedName("_id") val id: String? = null,

@@ -19,8 +19,12 @@ import com.example.huellaapp.model.esEstadoEnCasa
 import com.example.huellaapp.network.RetrofitClient
 import com.example.huellaapp.utils.ImageUtils
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.CancellationException
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.repeatOnLifecycle
 
-class DetalleMascotaActivity : AppCompatActivity() {
+class DetalleMascotaActivity : ResponsiveActivity() {
 
     companion object {
         fun crearIntent(context: android.content.Context, mascota: com.example.huellaapp.model.Mascota) =
@@ -46,7 +50,7 @@ class DetalleMascotaActivity : AppCompatActivity() {
     private lateinit var tvEmptyPistas: TextView
     private lateinit var tvContadorPistas: TextView
     private lateinit var pistaAdapter: PistaAdapter
-    
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detalle_mascota)
@@ -61,21 +65,30 @@ class DetalleMascotaActivity : AppCompatActivity() {
         val tvDetalleNombre: TextView = findViewById(R.id.tvDetalleNombre)
         tvDetalleEstado = findViewById(R.id.tvDetalleEstado)
         val tvDetalleUbicacion: TextView = findViewById(R.id.tvDetalleUbicacion)
-        
+
         val tvGridEspecie: TextView = findViewById(R.id.tvGridEspecie)
         val tvGridRaza: TextView = findViewById(R.id.tvGridRaza)
         val tvGridColor: TextView = findViewById(R.id.tvGridColor)
         val tvGridCiudad: TextView = findViewById(R.id.tvGridCiudad)
 
         val tvRasgos: TextView = findViewById(R.id.tvRasgos)
-        
+
         rvPistas = findViewById(R.id.rvPistas)
         tvEmptyPistas = findViewById(R.id.tvEmptyPistas)
         tvContadorPistas = findViewById(R.id.tvContadorPistas)
-        
+
         rvPistas.layoutManager = LinearLayoutManager(this)
         pistaAdapter = PistaAdapter(emptyList())
         rvPistas.adapter = pistaAdapter
+        tvEmptyPistas.setOnClickListener { cargarPistas() }
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                while (true) {
+                    cargarPistas()
+                    delay(8000)
+                }
+            }
+        }
 
         // 1. RECUPERAR DATOS DEL INTENT
         mascotaId = intent.getStringExtra("id")
@@ -94,12 +107,12 @@ class DetalleMascotaActivity : AppCompatActivity() {
 
         // 2. POBLAR LOS DATOS BÁSICOS
         tvDetalleNombre.text = nombre
-        
+
         // Cargar Foto Real
         if (!fotoBase64.isNullOrEmpty()) {
             ImageUtils.cargarBase64EnImageView(fotoBase64, ivDetalleFoto)
         }
-        
+
         actualizarUIEstado(estado)
 
         // 3. DESEMPAQUETAR LOS DATOS
@@ -175,22 +188,24 @@ class DetalleMascotaActivity : AppCompatActivity() {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        cargarPistas()
-    }
-    
+    private var cargandoPistas = false
+    private var pistasCargadas = false
+
     private fun cargarPistas() {
         if (mascotaId.isNullOrEmpty()) return
+        if (cargandoPistas) return
+        cargandoPistas = true
         lifecycleScope.launch {
             try {
                 val response = RetrofitClient.apiService.obtenerPistas(mascotaId!!)
                 if (response.isSuccessful) {
                     val lista = response.body() ?: emptyList()
                     pistaAdapter.actualizarPistas(lista)
-                    
+                    pistasCargadas = true
+                    tvEmptyPistas.text = "Aún no hay pistas registradas para esta mascota."
+
                     tvContadorPistas.text = "${lista.size} registradas"
-                    
+
                     if (lista.isEmpty()) {
                         tvEmptyPistas.visibility = View.VISIBLE
                         rvPistas.visibility = View.GONE
@@ -198,9 +213,22 @@ class DetalleMascotaActivity : AppCompatActivity() {
                         tvEmptyPistas.visibility = View.GONE
                         rvPistas.visibility = View.VISIBLE
                     }
+                } else error("HTTP " + response.code())
+                val reporte = RetrofitClient.apiService.obtenerMascota(mascotaId!!)
+                if (reporte.isSuccessful) reporte.body()?.let {
+                    intent.putExtra("estado", it.estado)
+                    actualizarUIEstado(it.estado)
                 }
+            } catch (e: CancellationException) {
+                throw e
             } catch (e: Exception) {
-                // Silencioso para no saturar al usuario
+                tvContadorPistas.text = "Sin actualizar"
+                if (!pistasCargadas) {
+                    tvEmptyPistas.text = "No se pudieron cargar las pistas. Toca aquí para reintentar."
+                    tvEmptyPistas.visibility = View.VISIBLE
+                }
+            } finally {
+                cargandoPistas = false
             }
         }
     }

@@ -11,7 +11,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.example.huellaapp.utils.ImageUtils
 
-class MiPerfilActivity : AppCompatActivity() {
+class MiPerfilActivity : ResponsiveActivity() {
 
     private lateinit var tvNombrePerfil: TextView
     private lateinit var tvCiudadPerfil: TextView
@@ -25,7 +25,7 @@ class MiPerfilActivity : AppCompatActivity() {
 
         val ivBackPerfil: ImageView = findViewById(R.id.ivBackPerfil)
         val tvEditar: TextView = findViewById(R.id.tvEditar)
-        
+
         tvNombrePerfil = findViewById(R.id.tvNombrePerfil)
         tvCiudadPerfil = findViewById(R.id.tvCiudadPerfil)
         tvCorreoPerfil = findViewById(R.id.tvCorreoPerfil)
@@ -98,7 +98,7 @@ class MiPerfilActivity : AppCompatActivity() {
         val nombre = prefs.getString("nombre", "Sin Nombre")
         val correo = prefs.getString("email", "sin_correo@ejemplo.com")
         val celular = prefs.getString("celular", "+57 000 000 0000")
-        
+
         val depto = prefs.getString("departamento", "Departamento")
         val ciudad = prefs.getString("ciudad", "Ciudad no definida")
         val fotoGuardada = prefs.getString("fotoPerfil", "")
@@ -106,14 +106,14 @@ class MiPerfilActivity : AppCompatActivity() {
         tvNombrePerfil.text = nombre
         tvCorreoPerfil.text = correo
         tvCelularPerfil.text = celular
-        
+
         if (!fotoGuardada.isNullOrEmpty()) {
             ImageUtils.cargarBase64EnImageView(fotoGuardada, ivAvatar)
             ivAvatar.imageTintList = null
             ivAvatar.setPadding(0, 0, 0, 0)
             ivAvatar.scaleType = ImageView.ScaleType.CENTER_CROP
         }
-        
+
         // Unimos Ciudad y Departamento para mostrar en el perfil
         if (ciudad == "Ciudad no definida" || depto == "Departamento") {
             tvCiudadPerfil.text = "Ubicación incompleta"

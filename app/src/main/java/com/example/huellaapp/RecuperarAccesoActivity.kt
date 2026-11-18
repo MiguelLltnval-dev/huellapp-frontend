@@ -19,7 +19,7 @@ import kotlinx.coroutines.CancellationException
 import org.json.JSONObject
 import retrofit2.Response
 
-class RecuperarAccesoActivity : AppCompatActivity() {
+class RecuperarAccesoActivity : ResponsiveActivity() {
 
     private lateinit var etEmailRecuperar: EditText
     private lateinit var btnEnviarEnlace: Button
@@ -76,7 +76,7 @@ class RecuperarAccesoActivity : AppCompatActivity() {
         }
 
         tvVolverLogin.setOnClickListener {
-            finish() 
+            finish()
         }
     }
 

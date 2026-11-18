@@ -11,7 +11,7 @@
     <ImageView
         android:id="@+id/ivDetalleFoto"
         android:layout_width="0dp"
-        android:layout_height="300dp"
+        android:layout_height="@dimen/detail_photo_height"
         android:scaleType="centerCrop"
         android:src="@android:drawable/ic_menu_gallery"
         android:background="#EAE5E1"
@@ -25,7 +25,7 @@
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="48dp"
+        android:layout_marginTop="16dp"
         android:background="@drawable/bg_avatar_verified"
         android:backgroundTint="#80FFFFFF"
         android:padding="8dp"
@@ -39,7 +39,7 @@
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_marginEnd="16dp"
-        android:layout_marginTop="48dp"
+        android:layout_marginTop="16dp"
         android:background="@drawable/bg_avatar_verified"
         android:backgroundTint="#80FFFFFF"
         android:padding="8dp"
@@ -52,7 +52,7 @@
     <androidx.core.widget.NestedScrollView
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="260dp"
+        android:layout_marginTop="@dimen/detail_content_offset"
         android:background="@drawable/bg_detail_header"
         android:fillViewport="true"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -73,7 +73,9 @@
 
                 <TextView
                     android:id="@+id/tvDetalleNombre"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_marginEnd="12dp"
+                    app:layout_constraintEnd_toStartOf="@id/tvDetalleEstado"
                     android:layout_height="wrap_content"
                     android:text="Nombre"
                     android:textColor="@color/huellapp_text_dark"
@@ -81,16 +83,6 @@
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
-
-                <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:layout_marginStart="8dp"
-                    android:src="@android:drawable/ic_menu_add"
-                    app:layout_constraintBottom_toBottomOf="@id/tvDetalleNombre"
-                    app:layout_constraintStart_toEndOf="@id/tvDetalleNombre"
-                    app:layout_constraintTop_toTopOf="@id/tvDetalleNombre"
-                    app:tint="@color/huellapp_primary" />
 
                 <TextView
                     android:id="@+id/tvDetalleEstado"
@@ -149,7 +141,8 @@
                         app:tint="@color/huellapp_primary" />
 
                     <LinearLayout
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
                         android:layout_marginStart="8dp">
@@ -193,7 +186,8 @@
                         app:tint="@color/huellapp_text_hint" />
 
                     <LinearLayout
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
                         android:layout_marginStart="8dp">
@@ -236,7 +230,8 @@
                         app:tint="@color/huellapp_primary" />
 
                     <LinearLayout
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
                         android:layout_marginStart="8dp">
@@ -279,7 +274,8 @@
                         app:tint="@color/huellapp_primary" />
 
                     <LinearLayout
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
                         android:layout_marginStart="8dp">
@@ -343,7 +339,7 @@
                 <Button
                     android:id="@+id/btnCompartir"
                     android:layout_width="match_parent"
-                    android:layout_height="55dp"
+                    android:layout_height="wrap_content" android:minHeight="55dp"
                     android:background="@drawable/bg_button_orange"
                     android:text="Compartir"
                     android:textAllCaps="false"
@@ -356,7 +352,7 @@
             <Button
                 android:id="@+id/btnMarcarEnCasa"
                 android:layout_width="match_parent"
-                android:layout_height="55dp"
+                android:layout_height="wrap_content" android:minHeight="55dp"
                 android:layout_marginTop="16dp"
                 android:background="@drawable/bg_button_orange"
                 android:text="Marcar como EN CASA"
@@ -428,19 +424,6 @@
                     app:layout_constraintBottom_toBottomOf="@id/tvPistasTitulo"
                     app:layout_constraintStart_toEndOf="@id/tvPistasTitulo"
                     app:layout_constraintTop_toTopOf="@id/tvPistasTitulo" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Avistamientos"
-                    android:textColor="@color/huellapp_text_hint"
-                    android:textSize="12sp"
-                    app:drawableStartCompat="@android:drawable/ic_menu_send"
-                    app:drawableTint="@color/huellapp_text_hint"
-                    android:drawablePadding="4dp"
-                    app:layout_constraintBottom_toBottomOf="@id/tvPistasTitulo"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="@id/tvPistasTitulo" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.recyclerview.widget.RecyclerView
@@ -464,7 +447,7 @@
             <Button
                 android:id="@+id/btnAgregarPista"
                 android:layout_width="match_parent"
-                android:layout_height="55dp"
+                android:layout_height="wrap_content" android:minHeight="55dp"
                 android:layout_marginTop="24dp"
                 android:layout_marginBottom="32dp"
                 android:background="@drawable/bg_button_orange"

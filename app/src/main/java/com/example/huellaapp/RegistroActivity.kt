@@ -16,7 +16,7 @@ import com.example.huellaapp.network.RetrofitClient
 import com.example.huellaapp.utils.LocationData
 import kotlinx.coroutines.launch
 
-class RegistroActivity : AppCompatActivity() {
+class RegistroActivity : ResponsiveActivity() {
 
     private lateinit var etNombreRegistro: EditText
     private lateinit var etEmailRegistro: EditText
@@ -50,7 +50,7 @@ class RegistroActivity : AppCompatActivity() {
         autoCompleteDepartamento.setOnItemClickListener { _, _, position, _ ->
             val deptSeleccionado = deptAdapter.getItem(position) ?: ""
             val ciudades = LocationData.departamentosYCiudades[deptSeleccionado] ?: emptyList()
-            
+
             val ciudadAdapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, ciudades)
             autoCompleteCiudad.setAdapter(ciudadAdapter)
             autoCompleteCiudad.text.clear() // Limpiar la ciudad si el usuario cambia el departamento
@@ -98,7 +98,7 @@ class RegistroActivity : AppCompatActivity() {
         lifecycleScope.launch {
             try {
                 val response = RetrofitClient.apiService.registrarUsuario(request)
-                
+
                 if (response.isSuccessful) {
                     // GUARDAR DATOS EN SHAREDPREFERENCES TRAS ÉXITO EN BD
                     val prefs = getSharedPreferences("HuellAppPrefs", MODE_PRIVATE)

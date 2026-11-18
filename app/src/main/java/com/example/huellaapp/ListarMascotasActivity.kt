@@ -13,7 +13,7 @@ import com.example.huellaapp.model.Mascota
 import com.example.huellaapp.network.RetrofitClient
 import kotlinx.coroutines.launch
 
-class ListarMascotasActivity : AppCompatActivity() {
+class ListarMascotasActivity : ResponsiveActivity() {
 
     private lateinit var rvMascotas: RecyclerView
     private lateinit var progressBar: ProgressBar
@@ -47,7 +47,7 @@ class ListarMascotasActivity : AppCompatActivity() {
         lifecycleScope.launch {
             try {
                 val response = RetrofitClient.apiService.obtenerMascotas()
-                
+
                 // Ocultamos la carga al recibir la respuesta
                 progressBar.visibility = View.GONE
 
